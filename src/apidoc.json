@@ -1,0 +1,12 @@
+{
+  "name": "Документация для api",
+  "version": "0.1.0",
+  "description": "Описание",
+  "title": "API",
+  "url" : "http://api.dev.lan:3001",
+  "sampleUrl": "http://api.dev.lan:3001",
+  "header": {
+    "title": "Основная информация",
+    "filename": "header.md"
+  }
+}
