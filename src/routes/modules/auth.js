@@ -101,7 +101,7 @@ module.exports = (app, passport, client) => {
      */
     router.get('/checkLogin', (req, res, next) => {
         if (req.isAuthenticated()) {
-            res.send({auth: req.user});
+            res.send({message: 'ok', result: req.user});
         } else {
             res.status(403).json({message: 'error', error: "not authenticated"});
         }
