@@ -12,10 +12,10 @@ const gen = (entity) => ({
             if (RBAC.canRead(req.user, entity)) {
                 if (valid(req, res, val)) next();
             } else {
-                res.status(403).send('{"err":"not rights"}');
+                res.status(403).json({message: 'error', error: "недостаточно прав доступа"});
             }
         } else {
-            res.status(401).send('{"err":"not authenticated"}');
+            res.status(401).json({message: 'error', error: "Неавторизовано"});
         }
     },
     isAccessWrite: (val) => async (req, res, next) => {
@@ -23,10 +23,10 @@ const gen = (entity) => ({
             if (RBAC.canWrite(req.user, entity)) {
                 if (valid(req, res, val)) next();
             } else {
-                res.status(403).send('{"err":"not rights"}');
+                res.status(403).json({message: 'error', error: "недостаточно прав доступа"});
             }
         } else {
-            res.status(401).send('{"err":"not authenticated"}');
+            res.status(401).json({message: 'error', error: "Неавторизовано"});
         }
     },
     isAccess: (val) => async (req, res, next) => {
@@ -34,10 +34,10 @@ const gen = (entity) => ({
             if (RBAC.isAccess(req.user, entity)) {
                 if (valid(req, res, val)) next();
             } else {
-                res.status(403).send('{"err":"not rights"}');
+                res.status(403).json({message: 'error', error: "недостаточно прав доступа"});
             }
         } else {
-            res.status(401).send('{"err":"not authenticated"}');
+            res.status(401).json({message: 'error', error: "Неавторизовано"});
         }
     },
 });

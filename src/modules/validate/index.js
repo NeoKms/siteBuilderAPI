@@ -27,7 +27,11 @@ const validateSchema = (req, res, schemaName) => {
             return res.status(400).send(errorResponse(ajv.errors));
         }
     } catch (error) {
-        return res.status(400).send(error);
+        let msg = config.PRODUCTION ? 'error' : error
+        return res.status(400).json({
+            message: 'error',
+            error: msg,
+        })
     }
 };
 const validateOneSchema = (schemaName) => (req, res, next) => {
@@ -38,14 +42,18 @@ const validateOneSchema = (schemaName) => (req, res, next) => {
             next();
         }
     } catch (error) {
-        return res.status(400).send(error);
+        let msg = config.PRODUCTION ? 'error' : error
+        return res.status(400).json({
+            message: 'error',
+            error: msg,
+        })
     }
 };
 const isAuthenticated = () => (req, res, next) => {
     if (req.isAuthenticated()) {
         next();
     } else {
-        res.status(401).send('{"err":"not authenticated"}');
+        res.status(401).json({message: 'error', error: "Неавторизовано"});
     }
 };
 

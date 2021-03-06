@@ -7,10 +7,10 @@ sites.siteList = async () => {
     let res;
     try {
         connection = await process.dbPool.connection();
-        res = await connection.query("SELECT `id`,`type_id`,`name`,`active`,`img` FROM `sites` ");
+        res = await connection.query("SELECT `id`,`type_id`,`name`,`active`,`img`,`address` FROM `sites` ");
         res = await reabaseSite(res,connection)
     } catch (err) {
-        logger.error(err, 'sites.getAuth:');
+        logger.error(err, 'sites.siteList:');
         throw err;
     } finally {
         if (connection) await connection.release();
@@ -24,6 +24,7 @@ sites.getSite = async (id) => {
         connection = await process.dbPool.connection();
         res = await connection.query("SELECT * FROM `sites` where `id`=?",[id]);
         res = await reabaseSite(res,connection)
+        res = res[0]
     } catch (err) {
         logger.error(err, 'sites.getSite:');
         throw err;
