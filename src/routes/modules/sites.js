@@ -82,7 +82,8 @@ module.exports = (app, passport, client) => {
      * @apiErrorExample {json} Error-Response:
      HTTP/1.1 400
      {
-         "message":"text error"
+         "message":"error",
+         "error":error text or array
      }
      */
     router.get('/', isAccessRead(), async (req, res, next) => {
@@ -170,7 +171,8 @@ module.exports = (app, passport, client) => {
      * @apiErrorExample {json} Error-Response:
      HTTP/1.1 400
      {
-         "message":"text error"
+         "message":"error",
+         "error":error text or array
      }
      */
     router.get('/:id', isAccessRead(), async (req, res, next) => {
@@ -183,6 +185,19 @@ module.exports = (app, passport, client) => {
                     }
                     res.json({message: 'ok', result})
                 })
+        } catch (error) {
+            logger.error(error)
+            let msg = config.PRODUCTION ? 'error' : error.message
+            res.status(400).json({message: 'error', error: msg});
+        }
+    });
+    router.post('/:id', isAccessWrite('update-site'), async (req, res, next) => {
+        const {id} = req.params
+        const data = req.body
+        try {
+            db.sites.setSite(data,id)
+                .then( noRes => db.sites.getSite(id))
+                .then( result => res.json({message: 'ok', result}))
         } catch (error) {
             logger.error(error)
             let msg = config.PRODUCTION ? 'error' : error.message

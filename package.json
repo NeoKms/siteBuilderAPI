@@ -4,9 +4,12 @@
   "description": "api fro site builder front",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js",
+    "dev": "nodemon app.js --ignore 'upload/*",
     "start": "node app.js",
     "apidoc": "apidoc -i src/ -o doc/"
+  },
+  "nodemonConfig": {
+    "ignore": ["upload/sites/*"]
   },
   "dependencies": {
     "@sentry/node": "^6.2.0",

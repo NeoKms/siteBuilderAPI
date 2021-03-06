@@ -4,8 +4,10 @@ const config = require('../../config');
 const logger = require('../../modules/logger');
 
 const userLogin = require('./schemas/users/user-login');
+const updateSite = require('./schemas/sites/update-site');
 
 ajv.addSchema(userLogin, 'user-login');
+ajv.addSchema(updateSite,'update-site');
 
 function errorResponse(schemaErrors) {
     const errors = schemaErrors.map((error) => ({

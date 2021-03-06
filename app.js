@@ -74,6 +74,8 @@ if (require('fs').existsSync('./doc/index.html')) {
     app.use('/apidoc', express.static(__dirname + '/doc'));
 }
 
+app.use(express.static('./upload'));
+
 app.listen(config.PORT, '0.0.0.0', () => {
     logger.info(`server runing port: ${config.PORT}`);
 });
