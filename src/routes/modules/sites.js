@@ -178,7 +178,7 @@ module.exports = (app, passport, client) => {
     router.get('/:id', isAccessRead(), async (req, res, next) => {
         const {id} = req.params
         try {
-            db.sites.getSite(id)
+            await db.sites.getSite(id)
                 .then(result => {
                     if (!result) {
                         res.status(404)
@@ -191,11 +191,65 @@ module.exports = (app, passport, client) => {
             res.status(400).json({message: 'error', error: msg});
         }
     });
+    /**
+     * @api {post} /sites/:id Сохранение сайта
+     * @apiDescription Сохранить сайт. При установки нового шаблона файл шаблона перетирается.
+     * При сохранении уже выбранного шаблона необходимо дополнительно передавать признак сохранения контента.
+     * В случае успеха возвращает полный перечень данных по сайту.
+     * @apiName sitesById
+     * @apiGroup SITES
+     * @apiPermission sites: read
+     *
+     *
+     * @apiParamExample {json} Request-Example:
+     {
+"active": 1
+"address": "vlad.dev.lan"
+"contacts": {"title:" "названиеорг", "phone": "телорг", "city": "город", "street": "улиц", "house": "1", "litera": "2", ...}
+"contentUpdate": true
+"description": "тест сайт 1"
+"id": 1
+"img": "https://www.vkpress.ru/upload/iblock/56b/56b5d2504d707f50989bc1677e0fce38.png"
+"name": "site1",
+"type": {
+"options":[...],
+"value":1
+}
+}
+     *
+
+     * @apiSuccessExample {json} Success-Response:
+     HTTP/1.1 200 OK
+     {
+    "message": "ok",
+    "result": {
+"active": 1
+"address": "vlad.dev.lan"
+"contacts": {"title:" "названиеорг", "phone": "телорг", "city": "город", "street": "улиц", "house": "1", "litera": "2", ...}
+"contentUpdate": true
+"description": "тест сайт 1"
+"id": 1
+"img": "https://www.vkpress.ru/upload/iblock/56b/56b5d2504d707f50989bc1677e0fce38.png"
+"name": "site1",
+"type": {
+"options":[...],
+"value":1
+}
+    }
+}
+     *
+     * @apiErrorExample {json} Error-Response:
+     HTTP/1.1 400
+     {
+         "message":"error",
+         "error":error text or array
+     }
+     */
     router.post('/:id', isAccessWrite('update-site'), async (req, res, next) => {
         const {id} = req.params
         const data = req.body
         try {
-            db.sites.setSite(data,id)
+            await db.sites.setSite(data,id)
                 .then( noRes => db.sites.getSite(id))
                 .then( result => res.json({message: 'ok', result}))
         } catch (error) {

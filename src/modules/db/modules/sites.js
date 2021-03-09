@@ -62,10 +62,7 @@ async function reabaseSite(res,connection) {
                 if (el.template_id>0 && fs.existsSync(templateDataPath)) {
                     templateData = JSON.parse(fs.readFileSync(templateDataPath,'utf8')) || {}
                 }
-                el.template = {
-                    id: el.template_id,
-                    data: templateData
-                }
+                el.template = templateData
                 delete el.template_id
             }
             if ('type_id' in el) {
@@ -94,11 +91,11 @@ async function prepareToSave(data,conn) {
         } else if (prop==='template') {
             toUpd.push('`template_id`=?')
             params.push(data[prop].id)
-            if (!('pages' in data[prop].data)) {
+            if (!('pages' in data[prop])) {
                 let tmplData = await template.byId(data[prop].id,conn)
                 fs.writeFileSync(`./upload/sites/templateData_${data.id}.json`,JSON.stringify(tmplData[0]))
             } else if ('contentUpdate' in data) {
-                fs.writeFileSync(`./upload/sites/templateData_${data.id}.json`,JSON.stringify(data[prop].data))
+                fs.writeFileSync(`./upload/sites/templateData_${data.id}.json`,JSON.stringify(data[prop]))
             }
         } else if (prop==='type') {
             toUpd.push('`type_id`=?')

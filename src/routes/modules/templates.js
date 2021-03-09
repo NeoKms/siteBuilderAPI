@@ -1,7 +1,8 @@
 const express = require('express');
 const logger = require('../../modules/logger');
 const db = require('../../modules/db');
-const config = require('../../config')
+const config = require('../../config');
+const fs = require('fs');
 const {isAccessRead, isAccessWrite, isAccess} = require('../../modules/auth').gen('sites');
 
 const router = express.Router();
@@ -44,6 +45,19 @@ module.exports = (app, passport, client) => {
         try {
             await db.templates.list()
                 .then(result => res.json({message: 'ok', result}))
+        } catch (error) {
+            logger.error(error)
+            let msg = config.PRODUCTION ? 'error' : error.message
+            res.status(400).json({message: 'error', error: msg});
+        }
+    });
+
+    app.use('/upload/images/', express.static('./upload/images/'));
+
+    router.get('/images', isAccessRead(), async (req, res, next) => {
+        try {
+            let items = fs.readdirSync('./upload/images').map(el=>`upload/images/${el}`);
+            res.json({message: 'ok', result:items})
         } catch (error) {
             logger.error(error)
             let msg = config.PRODUCTION ? 'error' : error.message

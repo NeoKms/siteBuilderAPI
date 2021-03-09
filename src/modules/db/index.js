@@ -1,12 +1,1 @@
-const user = require('./modules/users');
-const sites = require('./modules/sites');
-const templates = require('./modules/templates');
-
-
-const database = {
-    user,
-    sites,
-    templates,
-};
-
-module.exports = database;
+module.exports = require('fs').readdirSync('./src/modules/db/modules').reduce( (db,module)=>{db[module.replace('.js','')]= require(`./modules/${module}`);return db;},{});

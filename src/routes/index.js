@@ -2,16 +2,12 @@ const express = require('express');
 
 const router = express.Router();
 
-const auth = require('./modules/auth');
-const sites = require('./modules/sites');
-const templates = require('./modules/templates');
-
+console.log();
 module.exports = (app, passport, client) => {
-
-    app.use('/auth', auth(app, passport, client));
-    app.use('/sites', sites(app, passport, client));
+    require('fs').readdirSync('./src/routes/modules').map( (module)=> {
+        app.use(`/${module.replace('.js', '')}`, require(`./modules/${module}`)(app, passport, client));
+    });
     app.use('/upload/sites/', express.static('./upload/sites/'));
-    app.use('/templates',templates(app,passport,client));
     app.use('/upload/templates/', express.static('./upload/templates/'));
     app.use(router);
 
