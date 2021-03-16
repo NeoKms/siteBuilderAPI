@@ -9,7 +9,7 @@ sites.siteList = async () => {
     let res;
     try {
         connection = await process.dbPool.connection();
-        res = await connection.query("SELECT `id`,`type_id`,`name`,`active`,`img`,`address` FROM `sites` ");
+        res = await connection.query("SELECT `id`,`type_id`,`name`,`active`,`img`,`address`,`processing` FROM `sites` ");
         res = await reabaseSite(res, connection)
     } catch (err) {
         logger.error(err, 'sites.siteList:');
