@@ -6,10 +6,12 @@ const logger = require('../../modules/logger');
 const userLogin = require('./schemas/users/user-login');
 const updateSite = require('./schemas/sites/update-site');
 const publfilter = require('./schemas/publications/filter');
+const addnewsite = require('./schemas/sites/add-new-site');
 
 ajv.addSchema(userLogin, 'user-login');
 ajv.addSchema(updateSite,'update-site');
 ajv.addSchema(publfilter,'publ-filter');
+ajv.addSchema(addnewsite,'add-new-site');
 
 function errorResponse(schemaErrors) {
     const errors = schemaErrors.map((error) => ({

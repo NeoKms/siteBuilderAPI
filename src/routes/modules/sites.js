@@ -258,5 +258,28 @@ module.exports = (app, passport, client) => {
             res.status(400).json({message: 'error', error: msg});
         }
     });
+    router.delete('/:id', isAccessWrite(), async (req, res, next) => {
+        const {id} = req.params
+        try {
+            await db.sites.delSite(id)
+                .then( noRes => res.json({message: 'ok'}))
+        } catch (error) {
+            logger.error(error)
+            let msg = config.PRODUCTION ? 'error' : error.message
+            res.status(400).json({message: 'error', error: msg});
+        }
+    });
+    router.post('/', isAccessWrite('add-new-site'), async (req, res, next) => {
+        const { name } = req.body
+        try {
+            await db.sites.newSite(name)
+                .then( id => db.sites.getSite(id))
+                .then( result => res.json({message: 'ok', result}))
+        } catch (error) {
+            logger.error(error)
+            let msg = config.PRODUCTION ? 'error' : error.message
+            res.status(400).json({message: 'error', error: msg});
+        }
+    });
     return router;
 };

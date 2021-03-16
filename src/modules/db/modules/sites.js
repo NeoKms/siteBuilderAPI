@@ -49,15 +49,63 @@ sites.setSite = async (data) => {
         if (connection) await connection.release();
     }
     return res
-}
+};
+sites.newSite = async (name) => {
+    let connection;
+    let res;
+    try {
+        connection = await process.dbPool.connection();
+        await connection.query("insert into `sites` (`name`) values (?)", [name]);
+        res = await connection.query("SELECT LAST_INSERT_ID() as `id`");
+        res = res[0].id
+    } catch (err) {
+        logger.error(err, 'sites.getSite:');
+        throw err;
+    } finally {
+        if (connection) await connection.release();
+    }
+    return res
+};
+sites.delSite = async (id) => {
+    let connection;
+    let res;
+    try {
+        connection = await process.dbPool.connection();
+        await connection.query("delete from `sites` where `id`=?", [id]);
+    } catch (err) {
+        logger.error(err, 'sites.getSite:');
+        throw err;
+    } finally {
+        if (connection) await connection.release();
+    }
+    return res
+};
 
 async function reabaseSite(res, connection, oneSite = false) {
     if (res && res.length) {
         let types = await connection.query("select `id` as `value`,`name` as `label`,`code` from `site_types`")
         for (let i = 0; i < res.length; i++) {
             let el = res[i]
+            if ('img' in el) {
+                el.img = el.img || ''
+            }
+            if ('address' in el) {
+                el.address = el.address || ''
+            }
             if ('contacts' in el) {
-                el.contacts = JSON.parse(el.contacts)
+                el.contacts = JSON.parse(el.contacts) || {
+                    "title": "",
+                    "phone": "",
+                    "city": "",
+                    "street": "",
+                    "house": "",
+                    "litera": "",
+                    "index": 0,
+                    "emailMain": "",
+                    "emailFeedback": "",
+                    "doubleMailing": 0,
+                    "coordinate": {"x": "", "y": ""}
+                }
             }
             if (oneSite) {
                 el.publications = await connection.query("select `publ_id` as `id` from `site_publications` where `site_id`=?", [el.id])
@@ -74,7 +122,7 @@ async function reabaseSite(res, connection, oneSite = false) {
             if ('type_id' in el) {
                 el.type = {
                     options: types,
-                    value: el.type_id
+                    value: el.type_id || -1
                 }
                 delete el.type_id
             }
@@ -109,7 +157,7 @@ async function prepareToSave(data, conn) {
             toUpd.push('`type_id`=?')
             params.push(data[prop].value)
         } else if (prop === 'publications') {
-            await publ.setOnSite(data[prop].map(el=>el.id),data.id,conn)
+            await publ.setOnSite(data[prop].map(el => el.id), data.id, conn)
         } else if (props.includes(prop)) {
             toUpd.push(`\`${prop}\`=?`)
             params.push(data[prop])
