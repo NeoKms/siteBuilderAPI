@@ -80,7 +80,20 @@ sites.delSite = async (id) => {
     }
     return res
 };
-
+sites.setProcessing = async (id, val) => {
+    let connection;
+    let res;
+    try {
+        connection = await process.dbPool.connection();
+        await connection.query("update `sites` set `processing`=? where `id`=?", [val,id]);
+    } catch (err) {
+        logger.error(err, 'sites.setProcessing:');
+        throw err;
+    } finally {
+        if (connection) await connection.release();
+    }
+    return res
+};
 async function reabaseSite(res, connection, oneSite = false) {
     if (res && res.length) {
         let types = await connection.query("select `id` as `value`,`name` as `label`,`code` from `site_types`")
@@ -133,7 +146,6 @@ async function reabaseSite(res, connection, oneSite = false) {
         return res
     }
 }
-
 async function prepareToSave(data, conn) {
     let props = [
         'active', 'address', 'description', 'name',

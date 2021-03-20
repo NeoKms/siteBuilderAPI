@@ -3,7 +3,7 @@ const logger = require('../../modules/logger');
 const db = require('../../modules/db');
 const config = require('../../config')
 const {isAccessRead, isAccessWrite, isAccess} = require('../../modules/auth').gen('sites');
-
+const rabbitQueues = require('../../modules/rabbitQueues')
 const router = express.Router();
 
 module.exports = (app, passport, client) => {
@@ -258,6 +258,26 @@ module.exports = (app, passport, client) => {
             res.status(400).json({message: 'error', error: msg});
         }
     });
+    /**
+     * @api {delete} /sites/:id Удаление сайта
+     * @apiDescription Удаление сайта из системы
+     * @apiName sitesDelById
+     * @apiGroup SITES
+     * @apiPermission sites: read
+     *
+     * @apiSuccessExample {json} Success-Response:
+     HTTP/1.1 200 OK
+     {
+    "message": "ok",
+}
+     *
+     * @apiErrorExample {json} Error-Response:
+     HTTP/1.1 400
+     {
+         "message":"error",
+         "error":error text or array
+     }
+     */
     router.delete('/:id', isAccessWrite(), async (req, res, next) => {
         const {id} = req.params
         try {
@@ -269,7 +289,57 @@ module.exports = (app, passport, client) => {
             res.status(400).json({message: 'error', error: msg});
         }
     });
-    router.post('/', isAccessWrite('add-new-site'), async (req, res, next) => {
+    /**
+     * @api {put} /sites/ Создание сайта
+     * @apiDescription Создать сайт.
+     * @apiName sitesAddNew
+     * @apiGroup SITES
+     * @apiPermission sites: write
+     *
+     *
+     * @apiParamExample {json} Request-Example:
+     {
+"active": 1
+"address": "vlad.dev.lan"
+"contacts": {"title:" "названиеорг", "phone": "телорг", "city": "город", "street": "улиц", "house": "1", "litera": "2", ...}
+"contentUpdate": true
+"description": "тест сайт 1"
+"id": 1
+"name": "site1",
+"type": {
+"options":[...],
+"value":1
+}
+}
+     *
+     * @apiSuccessExample {json} Success-Response:
+     HTTP/1.1 200 OK
+     {
+    "message": "ok",
+    "result": {
+"active": 1
+"address": "vlad.dev.lan"
+"contacts": {"title:" "названиеорг", "phone": "телорг", "city": "город", "street": "улиц", "house": "1", "litera": "2", ...}
+"contentUpdate": true
+"description": "тест сайт 1"
+"id": 1
+"img": "https://www.vkpress.ru/upload/iblock/56b/56b5d2504d707f50989bc1677e0fce38.png"
+"name": "site1",
+"type": {
+"options":[...],
+"value":1
+}
+    }
+}
+     *
+     * @apiErrorExample {json} Error-Response:
+     HTTP/1.1 400
+     {
+         "message":"error",
+         "error":error text or array
+     }
+     */
+    router.put('/', isAccessWrite('add-new-site'), async (req, res, next) => {
         const { name } = req.body
         try {
             await db.sites.newSite(name)
@@ -281,5 +351,126 @@ module.exports = (app, passport, client) => {
             res.status(400).json({message: 'error', error: msg});
         }
     });
+    /**
+     * @api {put} /sites/:id/publish Опубликовать сайт
+     * @apiDescription Добавляет в очередь кролика на публикацию сообщение с этим сайтом.
+     * @apiName sitesPublish
+     * @apiGroup SITES
+     * @apiPermission sites: write
+     *
+     * @apiSuccessExample {json} Success-Response:
+     HTTP/1.1 200 OK
+     {
+        "message": "ok"
+     }
+     *
+     * @apiErrorExample {json} Error-Response:
+     HTTP/1.1 400
+     {
+         "message":"error",
+         "error":error text or array
+     }
+     */
+    router.put('/:id/publish', isAccessWrite(), async (req, res, next) => {
+        const {id} = req.params
+        try {
+            await db.sites.getSite(id)
+                .then(siteData => {
+                    if (!siteData) {
+                        res.status(404).end()
+                        return;
+                    }
+                    let errors = checkSiteDataToDeploy(siteData)
+                    if (errors.length) {
+                        res.json({message: 'error', error: errors})
+                    } else if (siteData.processing) {
+                        res.json({message: 'ok'})
+                    } else {
+                        db.sites.setProcessing(siteData.id, 1)
+                            .then( noRes => {
+                                rabbitQueues.toDataProcessor({
+                                    site_id: siteData.id,
+                                    template_id: siteData.template.id,
+                                    type: 'deploy',
+                                    domain: siteData.address,
+                                })
+                                res.json({message: 'ok'})
+                            })
+                    }
+                })
+        } catch (error) {
+            logger.error(error)
+            let msg = config.PRODUCTION ? 'error' : error.message
+            res.status(400).json({message: 'error', error: msg});
+        }
+    });
+    /**
+     * @api {put} /sites/:id/unpublish Снять сайт с публикации
+     * @apiDescription Отправляет сообщение в очередь кролика с удалением сайта.
+     * @apiName sitesPublish
+     * @apiGroup SITES
+     * @apiPermission sites: write
+     *
+     * @apiSuccessExample {json} Success-Response:
+     HTTP/1.1 200 OK
+     {
+        "message": "ok"
+     }
+     *
+     * @apiErrorExample {json} Error-Response:
+     HTTP/1.1 400
+     {
+         "message":"error",
+         "error":error text or array
+     }
+     */
+    router.put('/:id/unpublish', isAccessWrite(), async (req, res, next) => {
+        const {id} = req.params
+        try {
+            await db.sites.getSite(id)
+                .then(siteData => {
+                    if (!siteData) {
+                        res.status(404).end()
+                        return;
+                    }
+                    if (!siteData.active) {
+                        throw new Error('Сайт не опубликован')
+                    }
+                    db.sites.setProcessing(siteData.id, 2)
+                            .then( noRes => {
+                                rabbitQueues.toDataProcessor({
+                                    site_id: siteData.id,
+                                    type: 'delete',
+                                })
+                                res.json({message: 'ok'})
+                            })
+                })
+        } catch (error) {
+            logger.error(error)
+            let msg = config.PRODUCTION ? 'error' : error.message
+            res.status(400).json({message: 'error', error: msg});
+        }
+    });
     return router;
 };
+function checkSiteDataToDeploy(siteData) {
+    let errors = []
+    const c = siteData.contacts
+    const contactsChecked = !!c.city && !!c.coordinate.x && !!c.coordinate.y && !!c.emailFeedback && !!c.emailMain && !!c.index && !!c.litera && !!c.street && !!c.city && !!c.doubleMailing && !!c.house && !!c.phone && !!c.title
+    if (!contactsChecked) {
+        errors.push("Не заполнены контактные данные")
+    }
+    if (!siteData.address) {
+        errors.push("Не выбран адрес (домен)")
+    }
+    if (siteData.type.value<1) {
+        errors.push("Не выбран тип")
+    }
+    if (siteData.template.id<1) {
+        errors.push("Не выбран шаблон")
+    }
+    if (!siteData.publications.length) {
+        errors.push("Не выбраны публикации")
+    }
+    return errors
+}
