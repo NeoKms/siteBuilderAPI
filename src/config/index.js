@@ -1,14 +1,15 @@
 const {env} = process;
 
+const PRODUCTION = String(env.PRODUCTION || false).toLowerCase() == "true"
+
 //only dev//
-if (!env.PRODUCTION) {
+if (!PRODUCTION) {
     const dotenv = require('dotenv');
     dotenv.config();
 }
 //
-const PRODUCTION = env.PRODUCTION || false
 
-const PORT = env.PORT || 3001;
+const PORT = env.PORT
 
 const COOKIE_DOMAIN = env.COOKIE_DOMAIN || 'dev.lan';
 
