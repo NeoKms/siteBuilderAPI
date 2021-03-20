@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: localhost
--- Время создания: Мар 16 2021 г., 18:59
+-- Время создания: Мар 20 2021 г., 16:23
 -- Версия сервера: 5.7.24-log
 -- Версия PHP: 7.2.31
 
@@ -230,23 +230,25 @@ INSERT INTO `publication` (`id`, `name`, `active`, `liter_id`, `object_id`, `gat
 
 CREATE TABLE `sites` (
   `id` int(11) NOT NULL,
-  `type_id` int(11) NOT NULL,
+  `type_id` int(11) DEFAULT NULL,
   `name` text NOT NULL,
-  `active` tinyint(4) NOT NULL,
-  `address` text NOT NULL,
-  `img` text NOT NULL,
-  `description` text NOT NULL,
+  `active` tinyint(4) NOT NULL DEFAULT '0',
+  `address` text,
+  `img` text,
+  `description` text,
   `template_id` int(11) DEFAULT NULL,
-  `contacts` text NOT NULL
+  `contacts` text,
+  `processing` int(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Дамп данных таблицы `sites`
 --
 
-INSERT INTO `sites` (`id`, `type_id`, `name`, `active`, `address`, `img`, `description`, `template_id`, `contacts`) VALUES
-(1, 1, 'site1', 1, 's1.jrgreez.ru', 'https://www.vkpress.ru/upload/iblock/56b/56b5d2504d707f50989bc1677e0fce38.png', 'тест сайт 1', 1, '{\"title\":\"названиеорг\",\"phone\":\"телорг\",\"city\":\"город\",\"street\":\"улиц\",\"house\":\"1\",\"litera\":\"2\",\"index\":333444,\"emailMain\":\"tmp1@gmila.com\",\"emailFeedback\":\"tmp2@gmail.com\",\"doubleMailing\":\"1\",\"coordinate\":{\"x\":\"59.9558742615268\",\"y\":\"30.369708388251336\"}}'),
-(2, 2, 'site2', 0, 's2.jrgreez.ru', 'https://99px.ru/sstorage/56/2019/07/image_562207191850033055418.jpg', 'тест сайт 2', NULL, '{\"title\":\"названиеорг1\",\"phone\":\"телорг1\",\"city\":\"город1\",\"street\":\"улиц1\",\"house\":\"2\",\"litera\":\"3\",\"index\":111111,\"emailMain\":\"tmp1@gmila.com1\",\"emailFeedback\":\"tmp2@gmail.com1\",\"doubleMailing\":\"0\",\"coordinate\":{\"x\":\"59.9558742615268\",\"y\":\"30.369708388251336\"}}');
+INSERT INTO `sites` (`id`, `type_id`, `name`, `active`, `address`, `img`, `description`, `template_id`, `contacts`, `processing`) VALUES
+(1, 1, 'site1', 0, 's1.test.lan', 'https://www.vkpress.ru/upload/iblock/56b/56b5d2504d707f50989bc1677e0fce38.png', 'тест сайт 1', 1, '{\"title\":\"названиеорг\",\"phone\":\"телорг\",\"city\":\"город\",\"street\":\"улиц\",\"house\":\"1\",\"litera\":\"2\",\"index\":333444,\"emailMain\":\"tmp1@gmila.com\",\"emailFeedback\":\"tmp2@gmail.com\",\"doubleMailing\":\"1\",\"coordinate\":{\"x\":\"59.9558742615268\",\"y\":\"30.369708388251336\"}}', 1),
+(2, 2, 'site2', 0, 's2.test.lan', '', 'тест сайт 2', NULL, '{\"title\":\"названиеорг1\",\"phone\":\"телорг1\",\"city\":\"город1\",\"street\":\"улиц1\",\"house\":\"2\",\"litera\":\"3\",\"index\":111111,\"emailMain\":\"tmp1@gmila.com1\",\"emailFeedback\":\"tmp2@gmail.com1\",\"doubleMailing\":\"0\",\"coordinate\":{\"x\":\"59.9558742615268\",\"y\":\"30.369708388251336\"}}', 0),
+(9, NULL, '3452', 0, NULL, NULL, NULL, NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -269,7 +271,8 @@ INSERT INTO `site_publications` (`publ_id`, `site_id`) VALUES
 (2602, 1),
 (2614, 1),
 (2615, 1),
-(4197, 1);
+(4197, 1),
+(2575, 2);
 
 -- --------------------------------------------------------
 
@@ -448,7 +451,7 @@ ALTER TABLE `publication`
 -- AUTO_INCREMENT для таблицы `sites`
 --
 ALTER TABLE `sites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT для таблицы `site_types`
