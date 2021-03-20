@@ -1,5 +1,5 @@
-const { RBAC, PORT, AUTH, REDIS } = require('../config');
-const { validateSchema } = require('./validate');
+const {RBAC, PORT, AUTH, REDIS} = require('../config');
+const {validateSchema} = require('./validate');
 const axios = require('axios');
 const cookie = require('cookie');
 const logger = require('./logger');
@@ -43,7 +43,7 @@ const gen = (entity) => ({
 });
 
 const getSessionCookie = (renew = false) => {
-    if (global.coockieAuth!==undefined && renew===false) {
+    if (global.coockieAuth !== undefined && renew === false) {
         return global.coockieAuth;
     }
     return axios({
@@ -54,10 +54,10 @@ const getSessionCookie = (renew = false) => {
             password: AUTH.PASSWORD,
         },
         withCredentials: true
-    }).then( loginCookie => {
+    }).then(loginCookie => {
         if (loginCookie.headers['set-cookie'] && loginCookie.headers['set-cookie'].length < 1) {
             logger.error(new Error(`login error to 0.0.0.0:${PORT}/auth/login = NO COOKIES!`));
-            setTimeout(getSessionCookie(renew),1000);
+            setTimeout(getSessionCookie(renew), 1000);
             return;
         }
         const cookies = cookie.parse(loginCookie.headers['set-cookie'][0]);
@@ -66,7 +66,7 @@ const getSessionCookie = (renew = false) => {
 
         return global.coockieAuth;
     })
-        .catch (error => {
+        .catch(error => {
             logger.error(error)
             return false
         })
