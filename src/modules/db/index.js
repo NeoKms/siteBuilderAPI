@@ -1,9 +1,1 @@
-const user = require('./modules/users');
-const sites = require('./modules/sites');
-
-const database = {
-    user,
-    sites,
-};
-
-module.exports = database;
+module.exports = require('fs').readdirSync('./src/modules/db/modules').reduce( (db,module)=>{db[module.replace('.js','')]= require(`./modules/${module}`);return db;},{});

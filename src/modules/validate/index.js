@@ -4,8 +4,14 @@ const config = require('../../config');
 const logger = require('../../modules/logger');
 
 const userLogin = require('./schemas/users/user-login');
+const updateSite = require('./schemas/sites/update-site');
+const publfilter = require('./schemas/publications/filter');
+const addnewsite = require('./schemas/sites/add-new-site');
 
 ajv.addSchema(userLogin, 'user-login');
+ajv.addSchema(updateSite,'update-site');
+ajv.addSchema(publfilter,'publ-filter');
+ajv.addSchema(addnewsite,'add-new-site');
 
 function errorResponse(schemaErrors) {
     const errors = schemaErrors.map((error) => ({
@@ -27,7 +33,11 @@ const validateSchema = (req, res, schemaName) => {
             return res.status(400).send(errorResponse(ajv.errors));
         }
     } catch (error) {
-        return res.status(400).send(error);
+        let msg = config.PRODUCTION ? 'error' : error
+        return res.status(400).json({
+            message: 'error',
+            error: msg,
+        })
     }
 };
 const validateOneSchema = (schemaName) => (req, res, next) => {
@@ -38,14 +48,18 @@ const validateOneSchema = (schemaName) => (req, res, next) => {
             next();
         }
     } catch (error) {
-        return res.status(400).send(error);
+        let msg = config.PRODUCTION ? 'error' : error
+        return res.status(400).json({
+            message: 'error',
+            error: msg,
+        })
     }
 };
 const isAuthenticated = () => (req, res, next) => {
     if (req.isAuthenticated()) {
         next();
     } else {
-        res.status(401).send('{"err":"not authenticated"}');
+        res.status(401).json({message: 'error', error: "Неавторизовано"});
     }
 };
 

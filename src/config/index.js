@@ -24,8 +24,12 @@ const RABBIT = {
     QUERIES: {},
 };
 
+const WS = {
+    URL: env.WS_URL,
+};
+
 const DB = {
-    DB_HOST:  env.DB_HOST,
+    DB_HOST: env.DB_HOST,
     DB_PORT: env.DB_PORT,
     DB_USER: env.DB_USER,
     DB_PASSWORD: env.DB_PASSWORD,
@@ -38,6 +42,11 @@ const RBAC = require('../modules/rbac')
 
 const SALT = RBAC.authSalt;
 
+const AUTH = {
+    LOGIN: env.AUTH_LOGIN,
+    PASSWORD: env.AUTH_PASSWORD,
+};
+
 module.exports = {
     PORT,
     REDIS,
@@ -48,4 +57,6 @@ module.exports = {
     DB,
     RBAC,
     PRODUCTION,
+    AUTH,
+    WS,
 };

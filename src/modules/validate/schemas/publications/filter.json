@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "properties": {
+    "ids": {
+      "type": "array"
+    },
+    "sqr": {
+      "type": "array"
+    },
+    "rate": {
+      "type": "array"
+    },
+    "liter_id": {
+      "type": "integer"
+    },
+    "object_id": {
+      "type": "integer"
+    },
+    "types": {
+      "type": "array"
+    }
+  }
+}

@@ -25,7 +25,7 @@ module.exports = function (passport) {
                 username,
                 password: hash,
             };
-            db.user.getAuth(dataIn).then((res) => {
+            db.users.getAuth(dataIn).then((res) => {
                 if (res) {
                     return done(null, {
                         name: res.name,
