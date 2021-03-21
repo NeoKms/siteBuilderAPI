@@ -108,7 +108,7 @@ module.exports = (app, passport, client) => {
      HTTP/1.1 200 OK
      {
     "message": "ok",
-    "result": [
+    "result":
         {
             "id": 1,
             "type_id": 1,
@@ -136,14 +136,53 @@ module.exports = (app, passport, client) => {
                 ],
                 "value": 1
             }
-        },
+        }
+
+}
+     *
+     * @apiErrorExample {json} Error-Response:
+     HTTP/1.1 400
+     {
+         "message":"error",
+         "error":error text or array
+     }
+     */
+    router.get('/:id', isAccessRead(), async (req, res, next) => {
+        const {id} = req.params
+        try {
+            await db.sites.getSite(id)
+                .then(result => {
+                    if (!result) {
+                        res.status(404)
+                    }
+                    res.json({message: 'ok', result})
+                })
+        } catch (error) {
+            logger.error(error)
+            let msg = config.PRODUCTION ? 'error' : error.message
+            res.status(400).json({message: 'error', error: msg});
+        }
+    });
+    /**
+     * @api {get} /sites/:id/build Данные по сайту для билдера
+     * @apiDescription Отдает полный перечень данных по выбранному сайту и массик файлов для выгрузки
+     * @apiName sitesById_build
+     * @apiGroup SITES
+     * @apiPermission sites: read
+     *
+     *
+     * @apiSuccessExample {json} Success-Response:
+     HTTP/1.1 200 OK
+     {
+    "message": "ok",
+    "result":
         {
-            "id": 2,
-            "type_id": 2,
-            "name": "site2",
-            "active": 0,
-            "address": "vlad2.dev.lan",
-            "img": "https://99px.ru/sstorage/56/2019/07/image_562207191850033055418.jpg",
+            "id": 1,
+            "type_id": 1,
+            "name": "site1",
+            "active": 1,
+            "address": "vlad.dev.lan",
+            "img": "https://www.vkpress.ru/upload/iblock/56b/56b5d2504d707f50989bc1677e0fce38.png",
             "type": {
                 "options": [
                     {
@@ -162,10 +201,12 @@ module.exports = (app, passport, client) => {
                         "code": "promoSite"
                     }
                 ],
-                "value": 2
+                "value": 1
+            },
+            "template": {
+            ...
             }
         }
-    ]
 }
      *
      * @apiErrorExample {json} Error-Response:
@@ -175,10 +216,10 @@ module.exports = (app, passport, client) => {
          "error":error text or array
      }
      */
-    router.get('/:id', isAccessRead(), async (req, res, next) => {
+    router.get('/:id/build', isAccessRead(), async (req, res, next) => {
         const {id} = req.params
         try {
-            await db.sites.getSite(id)
+            await db.sites.getSite(id, true)
                 .then(result => {
                     if (!result) {
                         res.status(404)
