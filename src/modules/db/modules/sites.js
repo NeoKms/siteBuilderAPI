@@ -19,13 +19,13 @@ sites.siteList = async () => {
     }
     return res
 };
-sites.getSite = async (id) => {
+sites.getSite = async (id, build = false) => {
     let connection;
     let res;
     try {
         connection = await process.dbPool.connection();
         res = await connection.query("SELECT * FROM `sites` where `id`=?", [id]);
-        res = await reabaseSite(res, connection, true)
+        res = await reabaseSite(res, connection, true, build)
         res = res[0]
     } catch (err) {
         logger.error(err, 'sites.getSite:');
@@ -94,7 +94,7 @@ sites.setProcessing = async (id, val) => {
     }
     return res
 };
-async function reabaseSite(res, connection, oneSite = false) {
+async function reabaseSite(res, connection, oneSite = false, build = false) {
     if (res && res.length) {
         let types = await connection.query("select `id` as `value`,`name` as `label`,`code` from `site_types`")
         for (let i = 0; i < res.length; i++) {
@@ -120,8 +120,22 @@ async function reabaseSite(res, connection, oneSite = false) {
                     "coordinate": {"x": "", "y": ""}
                 }
             }
-            if (oneSite) {
+            if (oneSite && 'template_id' in el) {
                 el.publications = await connection.query("select `publ_id` as `id` from `site_publications` where `site_id`=?", [el.id])
+                if (build) {
+                    const files = await getFiles(`upload/templates/${el.template_id}/`);
+                    el.download = [
+                        {
+                            name: `site.settings.json`,
+                            path: `upload/sites/templateData_${el.id}.json`
+                        },
+                        {
+                            name: 'template.json',
+                            path: `upload/templates/${el.template_id}/template.json`
+                        },
+                        ...files
+                    ]
+                }
             }
             if ('template_id' in el) {
                 let templateData = {}
@@ -146,6 +160,18 @@ async function reabaseSite(res, connection, oneSite = false) {
         return res
     }
 }
+async function getFiles(path = "./") {
+    const { promises: fs } = require("fs");
+    const entries = await fs.readdir(path, { withFileTypes: true });
+    const files = entries
+        .filter(file => !file.isDirectory())
+        .map(file => ({ ...file, path: path + file.name }));
+    const folders = entries.filter(folder => folder.isDirectory());
+
+    for (const folder of folders)
+        files.push(...await getFiles(`${path}${folder.name}/`));
+    return files;
+}
 async function prepareToSave(data, conn) {
     let props = [
         'active', 'address', 'description', 'name',
@@ -156,13 +182,35 @@ async function prepareToSave(data, conn) {
         if (prop === 'contacts') {
             toUpd.push('`contacts`=?')
             params.push(JSON.stringify(data[prop]))
-        } else if (prop === 'template') {
+        } else if (prop === 'template' && data[prop].id > 0) {
             toUpd.push('`template_id`=?')
             params.push(data[prop].id)
+            let siteProps = {
+                name: data.name || '',
+                address: 'THIS IS ADDRESS',
+                contacts: data.contacts || {
+                    "title": "",
+                    "phone": "",
+                    "city": "",
+                    "street": "",
+                    "house": "",
+                    "litera": "",
+                    "index": 0,
+                    "emailMain": "",
+                    "emailFeedback": "",
+                    "doubleMailing": 0,
+                    "coordinate": {"x": "", "y": ""}
+                },
+                api_keys: {yandex_metrica: '',google_metrica: '',verbox: '',recaptcha_public: '',},
+            }
             if (!('pages' in data[prop])) {
                 let tmplData = await template.byId(data[prop].id, conn)
-                fs.writeFileSync(`./upload/sites/templateData_${data.id}.json`, JSON.stringify(tmplData[0]))
-            } else if ('contentUpdate' in data) {
+                let settings = tmplData[0]
+                settings.siteProps = siteProps;
+                fs.writeFileSync(`./upload/sites/templateData_${data.id}.json`, JSON.stringify(settings))
+            } else {
+                data[prop].siteProps = siteProps;
+                data[prop] = reinitImgInObj(data[prop])
                 fs.writeFileSync(`./upload/sites/templateData_${data.id}.json`, JSON.stringify(data[prop]))
             }
         } else if (prop === 'type') {
@@ -178,5 +226,23 @@ async function prepareToSave(data, conn) {
     params.push(data.id)
     return [toUpd, params]
 }
-
+function reinitImg(url) {
+    if (url.indexOf('http')!==-1) {
+        let splitted = url.split('/upload/')
+        if (splitted[1]) {
+            url = 'upload/'+url.split('/upload/')[1]
+        }
+    }
+    return url
+}
+function reinitImgInObj(obj) {
+    for (let key in obj) {
+        if (typeof obj[key] === 'object') {
+            obj[key] = reinitImgInObj(obj[key])
+        } else if (key === 'img' && obj[key]) {
+            obj[key] = reinitImg(obj[key])
+        }
+    }
+    return obj
+}
 module.exports = sites;

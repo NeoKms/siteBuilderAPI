@@ -9,6 +9,7 @@ module.exports = (app, passport, client) => {
     });
     app.use('/upload/sites/', express.static('./upload/sites/'));
     app.use('/upload/templates/', express.static('./upload/templates/'));
+    app.use('/upload/testsite/', express.static('./upload/testsite/'));
     app.use(router);
 
     router.get('/', (req, res, next) => {

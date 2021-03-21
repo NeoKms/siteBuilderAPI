@@ -135,7 +135,7 @@
       "name":"Главная",
       "code":"Main",
       "require":true,
-      "active":false,
+      "active":true,
       "blockList":[
         {
           "id":"1",
@@ -154,7 +154,7 @@
               "data":{
                 "col":8,
                 "label":"Главный банер",
-                "img":"https://jrgreez.ru/examples/books-1163695_1920.jpg",
+                "img":"upload/images/books-1163695_1920.jpg",
                 "size":{
                   "width":"418",
                   "height":"122"
@@ -186,7 +186,7 @@
               "data":{
                 "col":8,
                 "label":"Акционный баннер",
-                "img":"https://jrgreez.ru/examples/books-2158737_1920.jpg",
+                "img":"upload/images/books-2158737_1920.jpg",
                 "size":{
                   "width":"422",
                   "height":"89"
@@ -263,7 +263,7 @@
                 "block":[
                   {
                     "col":12,
-                    "img":"https://jrgreez.ru/examples/architecture-1643585_1920.jpg",
+                    "img":"upload/images/architecture-1643585_1920.jpg",
                     "size":{
                       "height":"141"
                     },
@@ -271,7 +271,7 @@
                   },
                   {
                     "col":12,
-                    "img":"https://jrgreez.ru/examples/architecture-1643585_1920.jpg",
+                    "img":"upload/images/architecture-1643585_1920.jpg",
                     "size":{
                       "height":"141"
                     },
@@ -279,7 +279,7 @@
                   },
                   {
                     "col":12,
-                    "img":"https://jrgreez.ru/examples/architecture-1643585_1920.jpg",
+                    "img":"upload/images/architecture-1643585_1920.jpg",
                     "size":{
                       "height":"141"
                     },
@@ -477,7 +477,7 @@
                 "block":[
                   {
                     "col":12,
-                    "img":"https://jrgreez.ru/examples/shopping-mall-1126485_1920.jpg",
+                    "img":"upload/images/shopping-mall-1126485_1920.jpg",
                     "size":{
                       "height":"141"
                     },
@@ -498,7 +498,7 @@
                   },
                   {
                     "col":12,
-                    "img":"https://jrgreez.ru/examples/shopping-mall-1126485_1920.jpg",
+                    "img":"upload/images/shopping-mall-1126485_1920.jpg",
                     "size":{
                       "height":"141"
                     },
@@ -727,7 +727,7 @@
                   "width":"310",
                   "height":"140"
                 },
-                "img":"https://jrgreez.ru/examples/typewriter-801921_1920.jpg",
+                "img":"upload/images/typewriter-801921_1920.jpg",
                 "note":"Изображение на фон"
               }
             }
@@ -763,7 +763,7 @@
                 "block":[
                   {
                     "col":12,
-                    "img":"https://jrgreez.ru/examples/coins-1726618_1920.jpg",
+                    "img":"upload/images/coins-1726618_1920.jpg",
                     "size":{
                       "width":"200",
                       "height":"114"
@@ -789,7 +789,7 @@
                   },
                   {
                     "col":12,
-                    "img":"https://jrgreez.ru/examples/coins-1726618_1920.jpg",
+                    "img":"upload/images/coins-1726618_1920.jpg",
                     "size":{
                       "width":"200",
                       "height":"114"
@@ -815,7 +815,7 @@
                   },
                   {
                     "col":12,
-                    "img":"https://jrgreez.ru/examples/coins-1726618_1920.jpg",
+                    "img":"upload/images/coins-1726618_1920.jpg",
                     "size":{
                       "width":"200",
                       "height":"114"
@@ -864,7 +864,7 @@
                   "width":"300",
                   "height":"114"
                 },
-                "img":"https://jrgreez.ru/examples/coins-1726618_1920.jpg",
+                "img":"upload/images/coins-1726618_1920.jpg",
                 "note":"Изображение на баннер"
               }
             },
@@ -966,7 +966,7 @@
                   "width":"310",
                   "height":"140"
                 },
-                "img":"https://jrgreez.ru/examples/typewriter-801921_1920.jpg",
+                "img":"upload/images/typewriter-801921_1920.jpg",
                 "note":"Изображение на фон"
               }
             }
@@ -1055,7 +1055,7 @@
                 "btnText":"Добавить акцию",
                 "example":{
                   "col":12,
-                  "img":"https://jrgreez.ru/examples/beverages-3105631_1920.jpg",
+                  "img":"upload/images/beverages-3105631_1920.jpg",
                   "size":{
                     "width":"210",
                     "height":"114"
@@ -1088,7 +1088,7 @@
                 },
                 "block":[
                   {
-                    "img":"https://jrgreez.ru/examples/beverages-3105631_1920.jpg",
+                    "img":"upload/images/beverages-3105631_1920.jpg",
                     "size":{
                       "width":"210",
                       "height":"114"
@@ -1121,7 +1121,7 @@
                     "col":12
                   },
                   {
-                    "img":"https://jrgreez.ru/examples/beverages-3105631_1920.jpg",
+                    "img":"upload/images/beverages-3105631_1920.jpg",
                     "size":{
                       "width":"210",
                       "height":"114"
@@ -1178,7 +1178,7 @@
                   "width":"300",
                   "height":"114"
                 },
-                "img":"https://jrgreez.ru/examples/coins-1726618_1920.jpg",
+                "img":"upload/images/coins-1726618_1920.jpg",
                 "note":"Изображение на баннер"
               }
             },
@@ -1280,7 +1280,7 @@
                   "width":"310",
                   "height":"140"
                 },
-                "img":"https://jrgreez.ru/examples/typewriter-801921_1920.jpg",
+                "img":"upload/images/typewriter-801921_1920.jpg",
                 "note":"Изображение на фон"
               }
             }
@@ -1398,7 +1398,7 @@
                   "width":"300",
                   "height":"114"
                 },
-                "img":"https://jrgreez.ru/examples/coins-1726618_1920.jpg",
+                "img":"upload/images/coins-1726618_1920.jpg",
                 "note":"Изображение на баннер"
               }
             },
@@ -1500,7 +1500,7 @@
                   "width":"310",
                   "height":"140"
                 },
-                "img":"https://jrgreez.ru/examples/typewriter-801921_1920.jpg",
+                "img":"upload/images/typewriter-801921_1920.jpg",
                 "note":"Изображение на фон"
               }
             }
@@ -1652,7 +1652,7 @@
                   "width":"300",
                   "height":"114"
                 },
-                "img":"https://jrgreez.ru/examples/coins-1726618_1920.jpg",
+                "img":"upload/images/coins-1726618_1920.jpg",
                 "note":"Изображение на баннер"
               }
             },
@@ -1754,7 +1754,7 @@
                   "width":"310",
                   "height":"140"
                 },
-                "img":"https://jrgreez.ru/examples/typewriter-801921_1920.jpg",
+                "img":"upload/images/typewriter-801921_1920.jpg",
                 "note":"Изображение на фон"
               }
             }
@@ -1844,7 +1844,7 @@
                   "width":"300",
                   "height":"114"
                 },
-                "img":"https://jrgreez.ru/examples/coins-1726618_1920.jpg",
+                "img":"upload/images/coins-1726618_1920.jpg",
                 "note":"Изображение на баннер"
               }
             },
@@ -1946,7 +1946,7 @@
                   "width":"310",
                   "height":"140"
                 },
-                "img":"https://jrgreez.ru/examples/typewriter-801921_1920.jpg",
+                "img":"upload/images/typewriter-801921_1920.jpg",
                 "note":"Изображение на фон"
               }
             }

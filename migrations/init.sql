@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: localhost
--- Время создания: Мар 20 2021 г., 16:23
+-- Время создания: Мар 21 2021 г., 11:02
 -- Версия сервера: 5.7.24-log
 -- Версия PHP: 7.2.31
 
@@ -246,9 +246,8 @@ CREATE TABLE `sites` (
 --
 
 INSERT INTO `sites` (`id`, `type_id`, `name`, `active`, `address`, `img`, `description`, `template_id`, `contacts`, `processing`) VALUES
-(1, 1, 'site1', 0, 's1.test.lan', 'https://www.vkpress.ru/upload/iblock/56b/56b5d2504d707f50989bc1677e0fce38.png', 'тест сайт 1', 1, '{\"title\":\"названиеорг\",\"phone\":\"телорг\",\"city\":\"город\",\"street\":\"улиц\",\"house\":\"1\",\"litera\":\"2\",\"index\":333444,\"emailMain\":\"tmp1@gmila.com\",\"emailFeedback\":\"tmp2@gmail.com\",\"doubleMailing\":\"1\",\"coordinate\":{\"x\":\"59.9558742615268\",\"y\":\"30.369708388251336\"}}', 1),
-(2, 2, 'site2', 0, 's2.test.lan', '', 'тест сайт 2', NULL, '{\"title\":\"названиеорг1\",\"phone\":\"телорг1\",\"city\":\"город1\",\"street\":\"улиц1\",\"house\":\"2\",\"litera\":\"3\",\"index\":111111,\"emailMain\":\"tmp1@gmila.com1\",\"emailFeedback\":\"tmp2@gmail.com1\",\"doubleMailing\":\"0\",\"coordinate\":{\"x\":\"59.9558742615268\",\"y\":\"30.369708388251336\"}}', 0),
-(9, NULL, '3452', 0, NULL, NULL, NULL, NULL, NULL, 0);
+(1, 1, 'site1', 0, 's1.build.lan', 'https://www.vkpress.ru/upload/iblock/56b/56b5d2504d707f50989bc1677e0fce38.png', 'тест сайт 1', 1, '{\"title\":\"названиеорг\",\"phone\":\"телорг\",\"city\":\"город\",\"street\":\"улиц\",\"house\":\"1\",\"litera\":\"2\",\"index\":333444,\"emailMain\":\"tmp1@gmila.com\",\"emailFeedback\":\"tmp2@gmail.com\",\"doubleMailing\":\"1\",\"coordinate\":{\"x\":\"59.9558742615268\",\"y\":\"30.369708388251336\"}}', 0),
+(2, 2, 'site2', 0, 's2.build.lan', '', 'тест сайт 2', 1, '{\"title\":\"названиеорг1\",\"phone\":\"телорг1\",\"city\":\"город1\",\"street\":\"улиц1\",\"house\":\"2\",\"litera\":\"3\",\"index\":111111,\"emailMain\":\"tmp1@gmila.com1\",\"emailFeedback\":\"tmp2@gmail.com1\",\"doubleMailing\":\"0\",\"coordinate\":{\"x\":\"59.9558742615268\",\"y\":\"30.369708388251336\"}}', 0);
 
 -- --------------------------------------------------------
 
