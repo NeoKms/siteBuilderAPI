@@ -7,11 +7,14 @@ const userLogin = require('./schemas/users/user-login');
 const updateSite = require('./schemas/sites/update-site');
 const publfilter = require('./schemas/publications/filter');
 const addnewsite = require('./schemas/sites/add-new-site');
+const ids = require('./schemas/ids');
+
 
 ajv.addSchema(userLogin, 'user-login');
 ajv.addSchema(updateSite,'update-site');
 ajv.addSchema(publfilter,'publ-filter');
 ajv.addSchema(addnewsite,'add-new-site');
+ajv.addSchema(ids,'ids');
 
 function errorResponse(schemaErrors) {
     const errors = schemaErrors.map((error) => ({

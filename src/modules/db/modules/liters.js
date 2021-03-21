@@ -15,4 +15,20 @@ liters.list = async () => {
     }
     return res
 };
+liters.byIds = async (ids) => {
+    let connection;
+    let res;
+    try {
+        connection = await process.dbPool.connection();
+        console.log(ids)
+
+        res = await connection.query("SELECT * from `liter` where `active`=1 and `id` in (?)",[ids]);
+    } catch (err) {
+        logger.error(err, 'liters.byIds:');
+        throw err;
+    } finally {
+        if (connection) await connection.release();
+    }
+    return res
+};
 module.exports = liters;

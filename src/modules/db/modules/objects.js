@@ -15,4 +15,18 @@ objects.list = async () => {
     }
     return res
 };
+objects.byIds = async (ids) => {
+    let connection;
+    let res;
+    try {
+        connection = await process.dbPool.connection();
+        res = await connection.query("SELECT * from `object` where `active`=1 and `id` in (?)",[ids]);
+    } catch (err) {
+        logger.error(err, 'objects.byIds:');
+        throw err;
+    } finally {
+        if (connection) await connection.release();
+    }
+    return res
+};
 module.exports = objects;
