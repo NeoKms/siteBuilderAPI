@@ -4,7 +4,7 @@ module.exports = {
         out_file : "/var/log/pm2_out.log",
         name: "app",
         script: "npm",
-        watch: true,
+        watch: false,
         args: "start",
         cwd: "/var/siteBuilderAPI/",
         ignore_watch: [
