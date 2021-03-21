@@ -63,7 +63,11 @@ publications.byfilter = async (req) => {
                 }
             }
         }
-        res = await connection.query("SELECT `id`,`name`,`sqr`,`destination`,`date`,`rate` from `publication` where " + where.join(' AND '), params);
+        let fields = '`id`,`name`,`sqr`,`destination`,`date`,`rate`'
+        if ('build' in req) {
+            fields = '*'
+        }
+        res = await connection.query("SELECT "+fields+" from `publication` where " + where.join(' AND '), params);
     } catch (err) {
         logger.error(err, 'publications.byfilter:');
         throw err;

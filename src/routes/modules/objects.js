@@ -17,5 +17,16 @@ module.exports = (app, passport, client) => {
             res.status(400).json({message: 'error', error: msg});
         }
     });
+    router.post('/byIds', isAccessRead('ids'), async (req, res, next) => {
+        const items = req.body
+        try {
+            await db.objects.byIds(items.ids)
+                .then(result => res.json({message: 'ok', result}))
+        } catch (error) {
+            logger.error(error)
+            let msg = config.PRODUCTION ? 'error' : error.message
+            res.status(400).json({message: 'error', error: msg});
+        }
+    });
     return router;
 };
