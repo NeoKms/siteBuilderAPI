@@ -91,18 +91,18 @@ spec:
             - name: SENTRY_KEY
               valueFrom:
                 configMapKeyRef:
-                  name: node-api-default
+                  name: api-default
                   key: SENTRY_KEY
             - name: PORT
               valueFrom:
                 configMapKeyRef:
-                  name: node-api-default
+                  name: api-default
                   key: PORT
             #rabbit
             - name: RABBIT_USER
               valueFrom:
                 configMapKeyRef:
-                  name: node-api-default
+                  name: api-default
                   key: RABBIT_USER
             - name: RABBIT_HOST
               valueFrom:
