@@ -2,7 +2,6 @@ const express = require('express');
 
 const router = express.Router();
 
-console.log();
 module.exports = (app, passport, client) => {
     require('fs').readdirSync('./src/routes/modules').map( (module)=> {
         app.use(`/${module.replace('.js', '')}`, require(`./modules/${module}`)(app, passport, client));

@@ -94,6 +94,20 @@ sites.setProcessing = async (id, val) => {
     }
     return res
 };
+sites.changeActive = async (id, val) => {
+    let connection;
+    let res;
+    try {
+        connection = await process.dbPool.connection();
+        await connection.query("update `sites` set `active`=? where `id`=?", [val,id]);
+    } catch (err) {
+        logger.error(err, 'sites.changeActive:');
+        throw err;
+    } finally {
+        if (connection) await connection.release();
+    }
+    return res
+};
 async function reabaseSite(res, connection, oneSite = false, build = false) {
     if (res && res.length) {
         let types = await connection.query("select `id` as `value`,`name` as `label`,`code` from `site_types`")

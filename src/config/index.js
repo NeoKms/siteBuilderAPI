@@ -25,9 +25,7 @@ const RABBIT = {
     QUERIES: {},
 };
 
-const WS = {
-    URL: env.WS_URL,
-};
+const WEBSOCKET_HOST = env.WEBSOCKET_HOST
 
 const DB = {
     DB_HOST: env.DB_HOST,
@@ -59,5 +57,5 @@ module.exports = {
     RBAC,
     PRODUCTION,
     AUTH,
-    WS,
+    WEBSOCKET_HOST,
 };
