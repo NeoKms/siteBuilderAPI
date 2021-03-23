@@ -20,8 +20,6 @@ liters.byIds = async (ids) => {
     let res;
     try {
         connection = await process.dbPool.connection();
-        console.log(ids)
-
         res = await connection.query("SELECT * from `liter` where `active`=1 and `id` in (?)",[ids]);
     } catch (err) {
         logger.error(err, 'liters.byIds:');

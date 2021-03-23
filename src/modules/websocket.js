@@ -1,28 +1,31 @@
 const io = require('socket.io-client');
 const config = require('../config');
 const logger = require('./logger');
-const auth = require('./auth').getSessionCookie();
+const auth = require('./auth').getSessionCookie;
+const db = require('./db/index');
 
 let socket = null;
 
 const getConnection = async function () {
     if (socket) return socket;
     const sessionCookie = await auth();
-    socket = io(config.WS.URL, {transports: ['websocket'], extraHeaders: {cookie: sessionCookie}});
+
+    socket = io(config.WEBSOCKET_HOST, {transports: ['websocket'], extraHeaders: {cookie: sessionCookie}});
 
     socket.on('connect', (data) => {
-        logger.debug('connect to ' + config.WS.URL + ' success');
+        logger.debug('connect to ' + config.WEBSOCKET_HOST + ' success');
     });
     socket.on('disconnect', () => {
         logger.info('socket disconnect');
     });
-    socket.on('test', (data) => {
-        logger.debug('socket test = ', data);
+    socket.on('builder', (data) => {
+        if ('site_id' in data && 'status' in data) {
+            db.sites.changeActive(data.site_id,data.status==='success'? 1 : 0)
+                .then(noRes => db.sites.setProcessing(data.site_id,0))
+                .catch(err=>logger.error(err))
+        }
+        logger.debug('socket builder = ', data);
     });
-    socket.sendExample = function (data) {
-        socket.emit('example', data);
-    };
-
     return socket;
 };
 

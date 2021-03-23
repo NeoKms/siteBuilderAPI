@@ -7,9 +7,8 @@ const logger = require('./src/modules/logger');
 const redis = require('redis');
 const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
-
+const wss = require('./src/modules/websocket').getConnection()
 const app = express();
-
 //redis
 const client = redis.createClient({
     host: config.REDIS.HOST,

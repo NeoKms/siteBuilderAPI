@@ -38,7 +38,6 @@ async function reabaseElem(res,withData=false) {
             if (withData) {
                 let templateData = {}
                 let templateDataPath = `./upload/templates/${el.id}/template.json`
-                console.log(templateDataPath)
                 if (fs.existsSync(templateDataPath)) {
                     templateData = JSON.parse(fs.readFileSync(templateDataPath, 'utf8')) || {}
                 }

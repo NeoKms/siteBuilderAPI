@@ -99,6 +99,22 @@ spec:
                 configMapKeyRef:
                   name: api-default
                   key: PORT
+            - name: AUTH_LOGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: api-default
+                  key: LOGIN
+            - name: AUTH_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: api-default
+                  key: PASSWORD
+            #wss
+            - name: WEBSOCKET_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: wsserver-default
+                  key: HOST
             #rabbit
             - name: RABBIT_USER
               valueFrom:
