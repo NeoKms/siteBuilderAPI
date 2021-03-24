@@ -35,7 +35,7 @@ const DB = {
     DB_NAME: env.DB_NAME
 };
 
-const SENTRY = env.SENTRY_KEY;
+const SENTRY = String(env.SENTRY_KEY || false).toLowerCase() == "true";
 
 const RBAC = require('../modules/rbac')
 

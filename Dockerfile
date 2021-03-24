@@ -23,7 +23,7 @@ RUN cd /var \
 
 #nodemon
 RUN npm install pm2@latest -g
-
+RUN npm install -g db-migrate
 EXPOSE ${PORT} 23
 
 CMD ["/usr/bin/supervisord"]
