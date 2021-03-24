@@ -292,7 +292,18 @@ module.exports = (app, passport, client) => {
         try {
             await db.sites.setSite(data,id)
                 .then( noRes => db.sites.getSite(id))
-                .then( result => res.json({message: 'ok', result}))
+                .then( result => {
+                    if (result.active) {
+                        rabbitQueues.toDataProcessor({
+                            site_id: result.id,
+                            template_id: siteData.template.id,
+                            type: 'update',
+                            domain: siteData.address,
+                        })
+                    }
+                    res.json({message: 'ok', result})
+                })
+
         } catch (error) {
             logger.error(error)
             let msg = config.PRODUCTION ? 'error' : error.message
