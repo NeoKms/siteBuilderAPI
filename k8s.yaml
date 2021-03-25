@@ -12,7 +12,7 @@ spec:
         paths:
           - backend:
               serviceName: site-builder-api
-              servicePort: 3001
+              servicePort: 80
             path: /
 ---
 apiVersion: v1
@@ -24,7 +24,7 @@ metadata:
     app: site-builder-api
 spec:
   ports:
-    - port: 3001
+    - port: 80
   clusterIP: None
   selector:
     app: site-builder-api
@@ -138,7 +138,7 @@ spec:
                   name: redis-default
                   key: PORT
           ports:
-            - containerPort: 3001
+            - containerPort: 80
               name: http
           lifecycle:
             postStart:
