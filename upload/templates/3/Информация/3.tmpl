@@ -1,0 +1,7 @@
+<section class="history" {% if (not elements.История_здания.active) %} hidden {% endif %} {% if (not active) %} hidden {% endif %}>
+    <div class="container history__container">
+        <h2 class="title history__title">{{ elements.История_здания.data.title }}</h2>
+        <p class="history__text">{{ elements.История_здания.data.value }}</p>
+    </div>
+    <div class="history__cubes"></div>
+</section>

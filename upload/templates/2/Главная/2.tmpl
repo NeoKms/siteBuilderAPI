@@ -1,0 +1,50 @@
+<div class="mainOfficeList">
+	<div class="container mainOfficeList__container">
+		<div class="mainOfficeList__blockRight" {% if (not elements.Включено_в_арендную_ставку.active) %} hidden {% endif %}>
+			<h2 class="mainOfficeList__title">В арендную ставку включено</h2>
+			<ul class="mainOfficeList__includesList">
+				{% for label in elements.Включено_в_арендную_ставку.data.value %}
+				<li class="mainOfficeList__includesItem">{{ label }}</li>
+				{%  endfor %}
+			</ul>
+		</div>
+		<div class="mainOfficeList__blockLeft" {% if (not elements.Публикации.active) %} hidden {% endif %}>
+			<ul class="mainOfficeList__officeList">
+				{% if (elements.Публикации.data.value == '1') %}
+					<?php $actions=1;?>
+				{% else %}
+					<?php $actions=0;?>
+				{% endif %}
+				<?php $res = $fa->randomPubl($actions,8);foreach ($res as $onePubl):?>
+				<a href="./detail.php?id=<?=$onePubl['id']?>">
+				<li class="mainOfficeList__officeItem">
+					<div class="mainOfficeList__officeBody">
+						<span class="mainOfficeList__officeNumber"><?=$onePubl['name']?><span><?=$onePubl['id']?></span></span>
+						<span class="mainOfficeList__officeSuare">Площадь<span><?=$onePubl['sqr']?></span>м²</span>
+						<span class="mainOfficeList__officeFloor">Этаж <span><?=$onePubl['floor_names']?></span></span>
+						<span class="mainOfficeList__officeClass">Класс <span><?=$onePubl['liter']['class'] ?? '-'?></span></span>
+					</div>
+					<div class="mainOfficeList__officeFooter">
+						<span class="mainOfficeList__officePrice">Ставка, ₽ <span><?=$onePubl['rate']?></span></span>
+					</div>
+				</li>
+				</a>
+				<?php endforeach;?>
+			</ul><a class="btn mainOfficeList__btn" href="./Publikacii.php">Посмотреть все</a>
+		</div>
+	</div>
+</div>
+<div class="aboutOffice" {% if (not elements.Промо_текст.active) %} hidden {% endif %}>
+	<div class="container aboutOffice__container">
+		<div class="aboutOffice__img" style="background-image: url(&quot;{{elements.Промо_текст.data.img}} &quot;) "></div>
+		<div class="aboutOffice__content">
+			<h2 class="aboutOffice__title">Аренда офисных помещений</h2>
+			<div class="aboutOffice__textBlock">
+				{% set arr_text = elements.Промо_текст.data.value|split("\n") %}
+				{% for text in arr_text %}
+				<p class="aboutOffice__text">{{text}}</p>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>

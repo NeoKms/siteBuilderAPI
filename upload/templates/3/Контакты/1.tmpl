@@ -1,0 +1,26 @@
+<div class="breadcrumbs" {% if (not breadcrumbs) %} hidden {% endif %}>
+    <div class="container breadcrumbs__container"><a class="breadcrumbs__link" href="index.html"><span>Главная</span></a><span>></span><a class="breadcrumbs__link" href="#"><span>Контакты</span></a><span>></span>
+    </div>
+</div>
+<section class="map map--main" {% if (not active) %} hidden {% endif %}>
+    <div class="map__wrapper" data-content="{{ siteProps.contacts.coordinate.x }},{{ siteProps.contacts.coordinate.y }}"  id="map__wrapper" {% if (not elements.Карта.active)%} hidden {% endif %}></div>
+    <div class="contentBlock-address contentBlock-address--main map__address" {% if (not elements.Контакты.active)%} hidden {% endif %}>
+        <div class="contentBlock-address__title">Офис продаж</div>
+        <div class="contentBlock-address__row contentBlock-address__row--address">Город:<span class="contentBlock-address__bold">{{ siteProps.contacts.city}}</span></div>
+        <div class="contentBlock-address__row contentBlock-address__row--street">Улица:<span class="contentBlock-address__bold">{{ siteProps.contacts.street}}</span></div>
+        <div class="contentBlock-address__row contentBlock-address__row--district">Район<span class="contentBlock-address__bold">отсутствует</span></div>
+        <div class="contentBlock-address__row contentBlock-address__row--phone">Телефон:<span class="contentBlock-address__bold">{{ siteProps.contacts.phone}}</span></div>
+        <div class="contentBlock-address__row contentBlock-address__row--metro">
+            <ul class="office-info__metroList">
+                <li class="office-info__metroItem">
+                    <svg class="icon icon__metro office-info__subwayIcon orange">
+                        <use xlink:href="#metro"></use>
+                    </svg><span class="office-info__subwayName">отсутствует</span>
+                    <svg class="icon icon__drive-time office-info__typeTime">
+                        <use xlink:href="#drive-time"></use>
+                    </svg><span class="office-info__time">--\\--</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>

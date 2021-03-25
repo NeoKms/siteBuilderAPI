@@ -1,0 +1,17 @@
+<section class="video-objects"  {% if (not elements.Видео.active) %} hidden {% endif %} {% if (not active) %} hidden {% endif %}>
+    <div class="container video-objects__container">
+        <h2 class="title video-objects__title">Видео объекта</h2>
+        <div class="video-objects__sliderBlock">
+            {% for video in elements.Видео.data.block %}
+            <div class="video-objects__sliderItem">
+                <div class="video-objects__sliderContent">
+                    <h3 class="video-objects__sliderTitle">{{ video.include[0].value }}</h3>
+                    <div class="video-objects__sliderText">{{ video.include[1].value }}</div>
+                </div>
+                <div class="video-objects__sliderImg" style="background-image: url(&quot;{{ video.img }} &quot;) "></div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="btn secondary video-objects__btnNext">Следующее видео</div>
+    </div>
+</section>

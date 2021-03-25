@@ -1,0 +1,24 @@
+<div class="breadcrumbs" {% if (not breadcrumbs) %} hidden {% endif %}>
+    <div class="container breadcrumbs__container"><a class="breadcrumbs__link" href="index.html"><span>Главная</span></a><span>></span><a class="breadcrumbs__link" href="#"><span>Акции</span></a><span>></span>
+    </div>
+</div>
+<section class="discounts" {% if (not elements.Описание_акций.active) %} hidden {% endif %} {% if (not active) %} hidden {% endif %}>
+    <div class="container discounts__container">
+        <h2 class="title discounts__title">АКЦИИ</h2>
+        <div class="discounts__list">
+            {% for action in elements.Описание_акций.data.block %}
+            <div class="discounts__item">
+                <div class="discounts__date">с<span>{{ action.include[1].value[0] }}</span>по<span>{{ action.include[1].value[1] }}</span></div>
+                <div class="discounts__body">
+                    <div class="discounts__img" style="background-image: url(&quot;{{ action.img }} &quot;) "></div>
+                    <div class="discounts__textBlock">
+                        <div class="discounts__name">{{ action.include[0].value }}</div>
+                        <div class="discounts__text">{{ action.include[2].value }}</div>
+                        <div class="discounts__note"></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div><a class="btn secondary-2 discounts__btnMore">СМОТРЕТЬ ЕЩЕ</a>
+    </div>
+</section>

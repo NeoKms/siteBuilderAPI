@@ -1,0 +1,23 @@
+<div class="breadcrumbs" {% if (not breadcrumbs) %} hidden {% endif %}>
+    <div class="container breadcrumbs__container"><a class="breadcrumbs__link" href="index.html"><span>Главная</span></a><span>></span><a class="breadcrumbs__link" href="#"><span>Информация</span></a><span>></span>
+    </div>
+</div>
+<section class="choice" {% if (not elements.О_нас.active) %} hidden {% endif %} {% if (not active) %} hidden {% endif %}>
+    <div class="container choice__container">
+        <h2 class="title choice__title">БОЛЬШОЙ ВЫБОР ПОМЕЩЕНИЙ</h2>
+        <div class="choice__list">
+            {% for box in elements.О_нас.data.block %}
+            <div class="choice__item">
+                <div class="choice__item-text">
+                    <div class="choice__header">
+                        <div class="choice__number">{{ loop.index }}</div>
+                        <div class="choice__subtitle">{{ box.include[0].value }}</div>
+                    </div>
+                    <div class="choice__text">{{ box.include[1].value }}</div>
+                </div>
+                <div class="choice__item-img" style="background-image: url(&quot;{{ box.img }}&quot;) "></div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

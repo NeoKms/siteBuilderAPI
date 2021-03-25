@@ -1,0 +1,13 @@
+<section class="aboutUs" {% if (not active) %} hidden {% endif %}>
+    <div class="container aboutUs__container" {% if (not elements.О_нас.active) %} hidden {% endif %}>
+        <div class="aboutUs__textBlock">
+            <h2 class="title aboutUs__title">О НАС</h2>
+            <p class="aboutUs__text">{{ elements.О_нас.data.value }}</p>
+        </div>
+    </div>
+    <div class="aboutUs__sliderBlock" {% if (not elements.Галерея_фото.active) %} hidden {% endif %}>
+        {% for photo in elements.Галерея_фото.data.block %}
+        <div class="aboutUs__sliderElem" style="background-image: url(&quot;{{ photo.img }} &quot;) "></div>
+        {% endfor %}
+    </div>
+</section>
