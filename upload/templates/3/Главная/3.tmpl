@@ -1,0 +1,127 @@
+<section class="advantages" {% if (not elements.Преимущества.active) %} hidden {% endif %} {% if (not active) %} hidden {% endif %}>
+    <div class="container advantages__container">
+        <h2 class="title advantages__title">ПОЧЕМУ СТОИТ ОБРАТИТЬСЯ К НАМ</h2>
+        <div class="advantages__block">
+            {% for val in elements.Преимущества.data.value %}
+                {% if val=='Банкомат' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__ATM advantages__icon">
+                            <use xlink:href="#ATM"></use>
+                        </svg>
+                        <div class="advantages__name">Банкомат</div>
+                    </div>
+                {% elseif val=='Кафе' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__coffee_room advantages__icon">
+                            <use xlink:href="#coffee_room"></use>
+                        </svg>
+                        <div class="advantages__name">Кафе</div>
+                    </div>
+                {% elseif val=='Видеонаблюдение' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__CCTV advantages__icon">
+                            <use xlink:href="#CCTV"></use>
+                        </svg>
+                        <div class="advantages__name">Видеонаблюдение</div>
+                    </div>
+                {% elseif val=='Конференц-зал' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__conference_room advantages__icon">
+                            <use xlink:href="#conference_room"></use>
+                        </svg>
+                        <div class="advantages__name">Конференц&nbsp-&nbspзал</div>
+                    </div>
+                {% elseif val=='Интернет, телефония' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__internet_telephony advantages__icon">
+                            <use xlink:href="#internet_telephony"></use>
+                        </svg>
+                        <div class="advantages__name">Интернет телефония</div>
+                    </div>
+                {% elseif val=='Доступ на объект' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__object_access advantages__icon">
+                            <use xlink:href="#object_access"></use>
+                        </svg>
+                        <div class="advantages__name">Доступ на объект</div>
+                    </div>
+                {% elseif val=='Паркинг' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__parking_icon advantages__icon">
+                            <use xlink:href="#parking_icon"></use>
+                        </svg>
+                        <div class="advantages__name">Паркинг</div>
+                    </div>
+                {% elseif val=='Энергоснабжение' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__power_supply advantages__icon">
+                            <use xlink:href="#power_supply"></use>
+                        </svg>
+                        <div class="advantages__name">Энергоснабжение</div>
+                    </div>
+                {% elseif val=='Аптека' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__pharmacy advantages__icon">
+                            <use xlink:href="#pharmacy"></use>
+                        </svg>
+                        <div class="advantages__name">Аптека</div>
+                    </div>
+                {% elseif val=='Круглосуточная охрана' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__security_icon advantages__icon">
+                            <use xlink:href="#security_icon"></use>
+                        </svg>
+                        <div class="advantages__name">Круглосуточная охрана</div>
+                    </div>
+                {% elseif val=='Магазин' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__shop advantages__icon">
+                            <use xlink:href="#shop"></use>
+                        </svg>
+                        <div class="advantages__name">Магазин</div>
+                    </div>
+                {% elseif val=='Супермаркет' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__supermarket advantages__icon">
+                            <use xlink:href="#supermarket"></use>
+                        </svg>
+                        <div class="advantages__name">Супермаркет</div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% set Publications = elements.Публикации.data.include  %}
+{# 0 - на главной, 1 - количество, 2 - тип #}
+<section class="available-objects" {% if (not Publications[0].active) %} hidden {% endif %} {% if (not active) %} hidden {% endif %}>
+    {% if (Publications[0].value == '1') %}
+        <?php $actions=1;?>
+    {% else %}
+        <?php $actions=0;?>
+    {% endif %}
+    <div class="container available-objects__container">
+        <h2 class="title available-objects__title">ДОСТУПНЫЕ ВАРИАНТЫ</h2>
+    </div>
+    <div class="available-objects__sliderBlock">
+        <?php $res = $fa->randomPubl($actions, {{ Publications[1].options[Publications[1].value-1].label }});foreach ($res as $onePubl):?>
+        <div class="contentBlock-office available-objects__sliderItems"><a class="contentBlock-office__wrap analytic" href="./detail.php?id=<?=$onePubl['id']?>">
+                <div class="contentBlock-office__image" style="background-image: url(&quot;<?=$onePubl['photos'][0] ?? './img/office1.jpg'?> &quot;) "></div>
+                <div class="contentBlock-office__content">
+                    <div class="contentBlock-office__body">
+                        <div class="contentBlock-office__title"><?=$onePubl['name']?> <span><?=$onePubl['id']??0?></span></div>
+                        <div class="contentBlock-office__data">
+                            <div class="contentBlock-office__dataItem">Площадь<span><?=$onePubl['sqr']?></span>м²</div>
+                            <div class="contentBlock-office__dataItem">Этаж<span><?=$onePubl['floor_names']?></span></div>
+                            <div class="contentBlock-office__dataItem contentBlock-office__dataItem--class">Класс<span><?=$onePubl['liter']['class']?></span></div>
+                        </div>
+                    </div>
+                    <div class="contentBlock-office__footer">
+                        <div class="contentBlock-office__price">Ставка, ₽<span><?=$onePubl['rate']?></span></div>
+                    </div>
+                </div></a>
+        </div>
+        <?php endforeach;?>
+    </div>
+    <div class="available-objects__buttonBlock"><a class="btn secondary available-objects__btn available-objects__btn--callback" href="#">ЗАКАЗАТЬ ЗВОНОК</a><a class="btn secondary-2 available-objects__btn available-objects__btn--more" href="./Publikacii.php">СМОТРЕТЬ ЕЩЕ</a></div>
+</section>

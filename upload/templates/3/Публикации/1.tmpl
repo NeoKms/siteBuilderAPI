@@ -1,0 +1,118 @@
+<div class="breadcrumbs" {% if (not breadcrumbs) %} hidden {% endif %}>
+    <div class="container breadcrumbs__container"><a class="breadcrumbs__link" href="./"><span>Главная</span></a><span>></span><a class="breadcrumbs__link" ><span>Помещения</span></a><span>></span>
+    </div>
+</div>
+{% set Publications = elements.Публикации.data.include  %}
+{# 0 - на главной, 1 - количество, 2 - вид #}
+<section class="premises" {% if (not active) %} hidden {% endif %} {% if (not Publications[0].active) %} hidden {% endif %}>
+    <div class="container premises__container">
+        <h2 class="title premises__title">БОЛЬШОЙ ВЫБОР ПОМЕЩЕНИЙ</h2>
+        {% if (Publications[0].value == '1') %}
+            <?php $actions=1;?>
+        {% else %}
+            <?php $actions=0;?>
+        {% endif %}
+        <?php $req['page']['row']={{ Publications[1].options[Publications[1].value-1].label }};
+            $res = $fa->publList($actions,$req['page'], $req['filter']['query'] ?? []) ?? [];?>
+        <?php if (!empty($res) && $req['page']['allPage']>1):?>
+        <div class="premises__head">
+            <div class="pagination premises__pagination">
+                <div class="pagination__selector"><span>Показывать по </span>
+                    <div class="pagination__selector-choise"><?=$req['page']['row']?>
+                        <svg class="icon icon__down pagination__icon-down">
+                            <use xlink:href="#down"></use>
+                        </svg>
+                    </div>
+                    <ul class="pagination__selectorList" style="display:none">
+                        <li class="pagination__selectorItem active"><a href="#"><span><?=$req['page']['row']?></span></a></li>
+                        <li class="pagination__selectorItem"><a href="#"><span>24</span></a></li>
+                        <li class="pagination__selectorItem"><a href="#"><span>48</span></a></li>
+                    </ul>
+                </div>
+                <div class="pagination__pagesInfo">
+                    <span><?=($req['page']['current']-1)*$req['page']['row']+1?>-<?=($req['page']['current'])*$req['page']['row']?></span>
+                    <span>из</span>
+                    <span><?=$req['page']['itemCount']?></span>
+                </div>
+                <div class="pagination__pages"><a class="pagination__control" href="#">
+                        <svg class="icon icon__prev pagination__icon-prev disabled">
+                            <use xlink:href="#prev"></use>
+                        </svg><span></span></a>
+                    <ul class="pagination__pagesList">
+                        <?php for ($i = 1; $i<=$req['page']['allPage'];$i++):
+                $href = $i == $req['page']['current'] ? '' : "./Publikacii.php?PAGE_1={$i}";
+                $active = $i == $req['page']['current'] ? 'active' : '';?>
+                        <li class="pagination__pagesItem"><a class="<?=$active?>" href="<?=$href?>"><span><?=$i?></span></a></li>
+                        <?php endfor; ?>
+                    </ul><a href="#">
+                        <svg class="icon icon__next pagination__icon-next pagination__control">
+                            <use xlink:href="#next"></use>
+                        </svg><span></span></a>
+                </div>
+            </div>
+        </div>
+        <?php endif;?>
+        <div class="premises__list">
+        <?php foreach ($res as $onePubl):?>
+            <div class="contentBlock-office premises__item"><a class="contentBlock-office__wrap" href="./detail.php?id=<?=$onePubl['id']?>">
+                    <div class="contentBlock-office__image" style="background-image: url(&quot;<?=$onePubl['photos'][0] ?? './img/office1.jpg'?> &quot;) "></div>
+                    <div class="contentBlock-office__content">
+                        <div class="contentBlock-office__body">
+                            <div class="contentBlock-office__title"><?=$onePubl['destination']?> <span><?=$onePubl['sqr']?></span>м²</div>
+                            <div class="contentBlock-office__data">
+                                <div class="contentBlock-office__dataItem">Площадь<span><?=$onePubl['sqr']?></span>м²</div>
+                                <div class="contentBlock-office__dataItem">Этаж<span><?=$onePubl['floor_names']?></span></div>
+                                <div class="contentBlock-office__dataItem contentBlock-office__dataItem--class">Класс<span><?=$onePubl['liter']['class']?></span></div>
+                            </div>
+                        </div>
+                        <div class="contentBlock-office__footer">
+                            <div class="contentBlock-office__price">Ставка, ₽<span><?=number_format((float)$onePubl['rate'], 0, '.', ' ')?></span></div>
+                        </div>
+                    </div>
+                    <div class="contentBlock-office__description"><?=$onePubl['description']?></div></a><a class="contentBlock-office__favorites" href="#">
+                    <svg class="icon icon__star contentBlock-office__icon-favorites">
+                        <use xlink:href="#star"></use>
+                    </svg><span></span></a>
+            </div>
+            <?php endforeach;?>
+        </div><a class="btn secondary-2 premises__btnMore">СМОТРЕТЬ ЕЩЕ</a>
+        <?php if (!empty($res) && $req['page']['allPage']>1):?>
+        <div class="premises__footer">
+            <div class="pagination premises__pagination">
+                <div class="pagination__selector"><span>Показывать по </span>
+                    <div class="pagination__selector-choise"><?=$req['page']['row']?>
+                        <svg class="icon icon__down pagination__icon-down">
+                            <use xlink:href="#down"></use>
+                        </svg>
+                    </div>
+                    <ul class="pagination__selectorList" style="display:none">
+                        <li class="pagination__selectorItem active"><a href="#"><span><?=$req['page']['row']?></span></a></li>
+                        <li class="pagination__selectorItem"><a href="#"><span>24</span></a></li>
+                        <li class="pagination__selectorItem"><a href="#"><span>48</span></a></li>
+                    </ul>
+                </div>
+                <div class="pagination__pagesInfo">
+                    <span><?=($req['page']['current']-1)*$req['page']['row']+1?>-<?=($req['page']['current'])*$req['page']['row']?></span>
+                    <span>из</span>
+                    <span><?=$req['page']['itemCount']?></span>
+                </div>
+                <div class="pagination__pages"><a class="pagination__control" href="#">
+                        <svg class="icon icon__prev pagination__icon-prev disabled">
+                            <use xlink:href="#prev"></use>
+                        </svg><span></span></a>
+                    <ul class="pagination__pagesList">
+                        <?php for ($i = 1; $i<=$req['page']['allPage'];$i++):
+                $href = $i == $req['page']['current'] ? '' : "./Publikacii.php?PAGE_1={$i}";
+                $active = $i == $req['page']['current'] ? 'active' : '';?>
+                        <li class="pagination__pagesItem"><a class="<?=$active?>" href="<?=$href?>"><span><?=$i?></span></a></li>
+                        <?php endfor; ?>
+                    </ul><a href="#">
+                        <svg class="icon icon__next pagination__icon-next pagination__control">
+                            <use xlink:href="#next"></use>
+                        </svg><span></span></a>
+                </div>
+            </div>
+        </div>
+        <?php endif;?>
+    </div>
+</section>

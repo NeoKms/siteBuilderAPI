@@ -1,0 +1,14 @@
+<div class="aboutOffice" {% if (not elements.SEO.active) %} hidden {% endif %}>
+    <div class="container aboutOffice__container">
+        <div class="aboutOffice__img" style="background-image: url(&quot;{{elements.SEO.data.img}} &quot;) "></div>
+        <div class="aboutOffice__content">
+            <h2 class="aboutOffice__title">Аренда офиса в СПб недорого</h2>
+            <div class="aboutOffice__textBlock">
+                {% set arr_text = elements.SEO.data.value|split("\n") %}
+                {% for text in arr_text %}
+                    <p class="aboutOffice__text">{{text}}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

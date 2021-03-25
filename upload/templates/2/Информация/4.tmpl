@@ -1,0 +1,26 @@
+<div class="feedback">
+    <div class="feedback__banner" style="background-image: url(&quot;{{elements.Фото_блока.data.img}}&quot;) ">
+        <div class="container feedback__container feedback__seo">
+            <div class="feedback__blockText" {% if (not elements.Наше_время.active) %} hidden {% endif %}>
+                <h2 class="feedback__textTitle">Современность</h2>
+                <p class="feedback__text">{{ elements.Наше_время.data.value }}</p>
+            </div>
+            <form class="feedback__form" action="#" method="get" {% if (not elements.Данные.active) %} hidden {% endif %}>
+                <h3 class="feedback__formTitle">Хотите узнать подробнее</h3>
+                {%  for input in elements.Данные.data.options %}
+                {% if input.label=='Ваше имя' and input.active  %}
+                <input class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--name" id="name" name="name" type="text" placeholder="Ваше имя" autocomplete="on" required>
+                {% elseif input.label=='Телефон' and input.active %}
+                <input class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--phone" id="phone" name="phone" type="tel" placeholder="Телефон" autocomplete="on" required>
+                {% endif %}
+                {% endfor %}
+                <div class="checkbox feedback__checkbox" checked>
+                    <input class="checkbox__input" type="checkbox" name="processing" id="checkbox_processing" checked>
+                    <label class="checkbox__label" for="checkbox_processing">Я согласен на обработку моих пресональных данных<span class="feedback__span">в соответствии с</span><br><a class="feedback__link" href="#"><span>Пользовательским соглашением</span></a>
+                    </label>
+                </div>
+                <button class="btn feedback__btn" type="submit" name="feedback">Отправить</button>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<title>{{ siteProps.name }}</title>
+	<link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+	<link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,500,600,700" rel="stylesheet">
+	<link rel="stylesheet" href="css/style.css?version=1">
+	<script type="text/javascript" src="js/jquery-3.5.1.min.js"></script>
+	<script type="text/javascript" src="js/jquery-migrate-1.4.1.min.js"></script>
+	<script type="text/javascript" src="js/fingerprint2.js"></script>
+	<script src="https://api-maps.yandex.ru/2.1/?apikey=75fb8ce9-bd31-4069-abfd-20a113b0e21e&amp;lang=ru_RU" type="text/javascript"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+{{ headerIncludeArea | raw }}
+<div class="header">
+	<div class="container header__container">
+		<nav class="header__nav">
+			<ul class="header__listNav">
+				{% for nav in navList %}
+					<li class="header__linkNav"><a href="./{{ nav.en }}.php"><span>{{ nav.ru }}</span></a>
+					</li>
+				{% endfor %}
+			</ul><a class="header__logo" href="./">
+				<div class="header__logoImg" style="background-image: url(&quot;&quot;);">{{ siteProps.name }}</div>
+				<div class="header__logoText"><?=$mainProps['address'] ?? '-'?></div></a>
+		</nav>
+		<div class="header__contactWrap">
+			<div class="header__contactBlock">
+				<div class="header__contactPhone"><a href="tel:88126550582" id="mainP-tel">8 (812) 655-05-82</a></div>
+				<div class="header__contactTitle">АРЕНДА</div>
+				<div class="header__contactText">от <?=$mainProps['min_rate'] ?? '-'?> р/м²</div>
+			</div>
+		</div>
+	</div>
+</div>

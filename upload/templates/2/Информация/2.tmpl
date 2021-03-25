@@ -1,0 +1,61 @@
+<div class="generalInfo" >
+    <div class="container generalInfo__container">
+        <div class="generalInfo__blockRight">
+            <div class="generalInfo__tableWrap" {% if (not elements.Места_общего_пользования.active) or (not elements.Дополнительно.active) %} hidden {% endif %}>
+                <h3 class="generalInfo__tableTitle">Инженерные сети и коммуникации</h3>
+                <table class="generalInfo__table">
+                    {% for obj in elements.Места_общего_пользования.data.options %}
+                        {% if obj.visible %}
+                    <?php $propElem=$mainProps['{{ obj.label | trim }}'] ?>
+                    <tr class="generalInfo__row" <?=$propElem[1]>0 ? '' : 'hidden'?>>
+                        <td class="generalInfo__cell generalInfo__cell--left">{{ obj.label | trim }}</td>
+                        <td class="generalInfo__cell generalInfo__cell--right">да <?=$propElem[0]==3 ? '| '.$propElem[1] : ''?></td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    {% for obj in elements.Дополнительно.data.options %}
+                    {% if obj.visible %}
+                    <?php $propElem=$mainProps['{{obj.label}}'] ?>
+                    <tr class="generalInfo__row" <?=$propElem[1]>0 ? '' : 'hidden'?>>
+                        <td class="generalInfo__cell generalInfo__cell--left">{{obj.label}}</td>
+                        <td class="generalInfo__cell generalInfo__cell--right">да </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="generalInfo__blockLeft">
+            <div class="generalInfo__listWrap" {% if (not elements.Доступные_услуги.active) %} hidden {% endif %}>
+                <h3 class="generalInfo__listTitle">Доступные услуги</h3>
+                <ul class="generalInfo__list">
+                    {% for id in elements.Доступные_услуги.data.value %}
+                    <li class="generalInfo__listItem">{{ elements.Доступные_услуги.data.options[id-1].label }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="generalInfo__listWrap" {% if (not elements.Доступные_коммуникации.active) %} hidden {% endif %}>
+                <h3 class="generalInfo__listTitle">Доступные коммуникации</h3>
+                <ul class="generalInfo__list">
+                    {% for id in elements.Доступные_коммуникации.data.value %}
+                        <li class="generalInfo__listItem">{{ elements.Доступные_коммуникации.data.options[id-1].label }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="aboutOffice aboutOffice__substrate" {% if (not elements.SEO_текст.active) %} hidden {% endif %}>
+    <div class="container aboutOffice__container">
+        <div class="aboutOffice__img" style="background-image: url(&quot;{{elements.SEO_текст.data.img}} &quot;) "></div>
+        <div class="aboutOffice__content">
+            <h2 class="aboutOffice__title">Аренда офиса в СПб недорого</h2>
+            <div class="aboutOffice__textBlock">
+                {% set arr_text = elements.SEO_текст.data.include[0].value|split("\n") %}
+                {% for text in arr_text %}
+                <p class="aboutOffice__text">{{text}}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>

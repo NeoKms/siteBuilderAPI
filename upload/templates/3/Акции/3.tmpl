@@ -1,0 +1,10 @@
+<section class="map"{% if (not active) %} hidden {% endif %}>
+    <div class="map__wrapper" id="map__wrapper" data-content="{{ siteProps.contacts.coordinate.x }},{{ siteProps.contacts.coordinate.y }}"
+         {% if (not elements.Карта.active) %} hidden {% endif %}></div>
+    <div class="contentBlock-address contentBlock-address--main map__address"  {% if (not elements.Контакты.active) %} hidden {% endif %}>
+        <div class="contentBlock-address__title">Офис продаж</div>
+        <div class="contentBlock-address__row contentBlock-address__row--address">Город:<span class="contentBlock-address__bold">{{ siteProps.contacts.city}}</span></div>
+        <div class="contentBlock-address__row contentBlock-address__row--phone">Телефон:<span class="contentBlock-address__bold">{{ siteProps.contacts.phone}}</span></div>
+        <div class="contentBlock-address__row contentBlock-address__row--time">Время работы:<span class="contentBlock-address__bold">с 9 до 18</span></div>
+    </div>
+</section>

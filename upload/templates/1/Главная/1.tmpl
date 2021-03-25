@@ -1,0 +1,24 @@
+<section class="banner" {% if (not active) %} hidden {% endif %}>
+    <div class="banner__image" style="background-image: url(&quot;{{ elements.Главный_банер.data.img }} &quot;) " {% if (not elements.Главный_банер.active) %} hidden {% endif %}>
+        <div class="container banner__container">
+            <div class="banner__blockTitle">
+                <h2 class="banner__title">{{ elements.Главный_банер.data.include[0].value }}</h2>
+                <div class="banner__price">СТОИМОСТЬ ОТ<span class="banner__priceVal">{{ elements.Главный_банер.data.include[1].value }}</span></div><a class="btn btn__primary banner__btn banner__btn--long" href="#">Получить предложение</a>
+            </div>
+            <div class="banner__blockAdvantage banner__blockAdvantage--desk" {% if (not elements.Акционный_баннер.active) %} hidden {% endif %}>
+                <div class="banner__advantageTitle">БЕЗОПАСНАЯ АРЕНДА</div>
+                <div class="banner__advantageText">Онлайн просмотры и договор с цифровой подписью</div>
+                <a class="btn primary banner__btn banner__btn--short" href="./actions"
+                   {% if (not elements.Акционный_баннер.include[0].options[0].active) %} hidden {% endif %}
+                >Подробнее</a>
+            </div>
+        </div>
+    </div>
+    <div class="banner__blockAdvantage banner__blockAdvantage--mob" {% if (not elements.Акционный_баннер.active) %} hidden {% endif %}>
+        <div class="banner__advantageTitle">БЕЗОПАСНАЯ АРЕНДА</div>
+        <div class="banner__advantageText">Онлайн просмотры и договор с цифровой подписью</div>
+        <a class="btn primary banner__btn banner__btn--short" href="./actions"
+           {% if (not elements.Акционный_баннер.include[0].options[0].active) %} hidden {% endif %}
+        >Подробнее</a>
+    </div>
+</section>

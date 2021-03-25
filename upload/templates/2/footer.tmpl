@@ -1,0 +1,16 @@
+<div class="footer">
+	<div class="container footer__container">
+		<nav class="footer__nav">
+			<ul class="footer__listNav">
+				{% for nav in navList %}
+					<li class="footer__linkNav"><a href="./{{ nav.en }}.php"><span>{{ nav.ru }}</span></a>
+					</li>
+				{% endfor %}
+			</ul>
+		</nav>
+		<div class="footer__copyright">© 2016 - 2020 {{ siteProps.name }}, <?=$mainProps['address'] ?? '-'?>, все права защищены.</div>
+	</div>
+</div>
+<script src="js/scripts.js?version=1"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<section class="officeList" {% if (not elements.Порядок_публикации.active) %} hidden {% endif %}>
+    {% if (elements.Порядок_публикации.data.value == '1') %}
+        <?php $actions=1;?>
+    {% else %}
+        <?php $actions=0;?>
+    {% endif %}
+    <div class="container officeList__container">
+        <div class="filter container">
+            <form action="./Publikacii.php">
+                <p>
+                    <label>Ставка</label><input placeholder="от" name="rate[from]" value="<?=$req['filter']['form']['rate']['from'] ?? ''?>"><input placeholder="до" name="rate[to]"  value="<?=$req['filter']['form']['rate']['to'] ?? ''?>">
+                </p><p><label>Площадь</label><input placeholder="от" name="sqr[from]" value="<?=$req['filter']['form']['sqr']['from'] ?? ''?>"><input placeholder="до" name="sqr[to]"  value="<?=$req['filter']['form']['sqr']['to'] ?? ''?>">
+                </p>
+                <p><label>Название</label><input placeholder="включает этот текст" name="name" value="<?=$req['filter']['form']['name'] ?? ''?>"></p>
+                <button type="submit" class="btn" style="padding: 5px" name="filter">Применить фильтр</button>
+            </form>
+        </div>
+        <div class="officeList__list">
+            <?php
+            $req['page']['row']={{ elements.Колличество_на_странице.data.options[elements.Колличество_на_странице.data.value-1].label }};
+            $res = $fa->publList($actions,$req['page'], $req['filter']['query'] ?? []) ?? [];foreach ($res as $onePubl):?>
+            <a class="officeBlock <?=$onePubl['action']?'officeBlock--sale':''?> officeList__item officeList__item--type1" href="./detail.php?id=<?=$onePubl['id']?>">
+                <div class="officeBlock__image" style="background-image: url(&quot;<?=$onePubl['photos'][0] ?? './img/office1.jpg'?> &quot;) "></div>
+                <div class="officeBlock__content">
+                    <div class="officeBlock__body">
+                        <div class="officeBlock__title"><?=$onePubl['name']?></div>
+                        <div class="officeBlock__data">
+                            <div class="officeBlock__dataItem">Площадь<span><?=$onePubl['sqr']?></span>м²</div>
+                            <div class="officeBlock__dataItem">Этаж<span><?=$onePubl['floor_names']?></span></div>
+                            <div class="officeBlock__dataItem">Класс<span><?=$onePubl['liter']['class']?></span></div>
+                        </div>
+                    </div>
+                    <div class="officeBlock__footer">
+                        <?php if ($onePubl['pred_rate'] && $onePubl['action']):?>
+                        <div class="officeBlock__price">Ставка, ₽<span><?=$onePubl['pred_rate']?></span></div>
+                        <span class="officeBlock__priceSale"><?=$onePubl['rate']?></span>
+                        <?php else: ?>
+                        <div class="officeBlock__price">Ставка, ₽<span><?=$onePubl['rate']?></span></div>
+                        <?php endif; ?>
+                    </div>
+                </div></a>
+            <?php endforeach;?>
+        </div>
+    </div>
+    <?php if (!empty($res) && $req['page']['allPage']>1):?>
+    <div class="page_navigation container" style="text-align: center">
+        <?php
+		echo '<p>',($req['page']['current']-1)*$req['page']['row']+1,'-',($req['page']['current'])*$req['page']['row'],' из ',$req['page']['itemCount'],'</p><p>';
+            for ($i = 1; $i<=$req['page']['allPage'];$i++){
+            $href = $i == $req['page']['current'] ? '' : "./Publikacii.php?PAGE_1={$i}";
+            $color = $i == $req['page']['current'] ? 'red' : 'black';
+            echo "<a style='cursor: pointer; margin-left: 5px;color: {$color}' href='{$href}'>{$i}</a>";
+            }
+            ?>
+        </p>
+    </div>
+    <?php endif;?>
+</section>

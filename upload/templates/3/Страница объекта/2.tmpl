@@ -1,0 +1,28 @@
+<?php $res = $fa->randomPubl(0, 4); if (!empty($res)):?>
+<section class="available-objects" {% if (not active) %} hidden {% endif %}>
+    <div class="container available-objects__container">
+        <h2 class="title available-objects__title">ИЗБРАННОЕ</h2>
+    </div>
+    <div class="available-objects__sliderBlock">
+        <?php foreach ($res as $onePubl):?>
+        <div class="contentBlock-office available-objects__sliderItems"><a class="contentBlock-office__wrap" href="./detail.php?id=<?=$onePubl['id']?>">
+                <div class="contentBlock-office__image" style="background-image: url(&quot;<?=$onePubl['photos'][0] ?? './img/office1.jpg'?> &quot;) "></div>
+                <div class="contentBlock-office__content">
+                    <div class="contentBlock-office__body">
+                        <div class="contentBlock-office__title"><?=$onePubl['name']?> <span><?=$onePubl['id']??0?></span></div>
+                        <div class="contentBlock-office__data">
+                            <div class="contentBlock-office__dataItem">Площадь<span><?=$onePubl['sqr']?></span>м²</div>
+                            <div class="contentBlock-office__dataItem">Этаж<span><?=$onePubl['floor_names']?></span></div>
+                            <div class="contentBlock-office__dataItem contentBlock-office__dataItem--class">Класс<span><?=$onePubl['liter']['class']?></span></div>
+                        </div>
+                    </div>
+                    <div class="contentBlock-office__footer">
+                        <div class="contentBlock-office__price">Ставка, ₽<span><?=$onePubl['rate']?></span></div>
+                    </div>
+                </div></a>
+        </div>
+        <?php endforeach;?>
+    </div>
+    <div class="available-objects__buttonBlock"><a class="btn secondary available-objects__btn available-objects__btn--callback" href="#">ЗАКАЗАТЬ ЗВОНОК</a><a class="btn secondary-2 available-objects__btn available-objects__btn--more" href="./Publikacii.php">СМОТРЕТЬ ЕЩЕ</a></div>
+</section>
+<?php endif;?>

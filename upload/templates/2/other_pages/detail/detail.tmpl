@@ -1,0 +1,130 @@
+<?php $publ = $fa->getPubl($_REQUEST['id']); ?>
+<section class="officePage">
+    <div class="container officePage__container">
+        <div class="officePage__header">
+            <h2 class="officePage__title"><?=$publ['destination'] ?? ''?> у метро<span><?=$publ['object']['subway'][0]['name'] ?? ''?> |</span>Площадь<span><?=$publ['sqr']?></span>м²<br>по ставке<span><?=$publ['rate']?></span>руб *</h2>
+            <div class="officePage__request">
+                <input class="officePage__dataPicker" type="date">
+                <button class="btn officePage__btn" type="button">Оставить заявку на просмотр</button>
+            </div>
+        </div>
+        <div class="officePage__body">
+            <div class="officePage__imageBlock">
+                <div class="officePage__imageMain" style="background-image: url(&quot;<?=$publ['photos'][0]?>&quot;) ">
+                    <div class="officePage__priceBlock"><span class="officePage__price"><?=$publ['sqr']*$publ['rate']?><br><span>р/месяц</span></span></div>
+                </div>
+                <div class="officePage__imageList">
+                    <div class="officePage__imageItem" style="background-image: url(&quot;<?=$publ['photos'][1]?> &quot;) "></div>
+                    <div class="officePage__imageItem" style="background-image: url(&quot;<?=$publ['photos'][2]?> &quot;) "></div>
+                </div>
+            </div>
+            <div class="officePage__contentBlock">
+                <div class="officePage__tableWrap">
+                    <div class="pbt-table">
+                        <h3 class="pbt-table__tableTitle">Общее</h3>
+                        <table class="pbt-table__table">
+                            <tr class="pbt-table__row">
+                                <td class="pbt-table__cell pbt-table__cell--left">Тип объекта</td>
+                                <td class="pbt-table__cell pbt-table__cell--right"><?=$publ['destination'] ?? ''?></td>
+                            </tr>
+                            <tr class="pbt-table__row">
+                                <td class="pbt-table__cell pbt-table__cell--left">Площадь</td>
+                                <td class="pbt-table__cell pbt-table__cell--right"><?=$publ['sqr']?> м²</td>
+                            </tr>
+                            <tr class="pbt-table__row">
+                                <td class="pbt-table__cell pbt-table__cell--left">Код</td>
+                                <td class="pbt-table__cell pbt-table__cell--right"><?=$publ['name']?></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="officePage__listIconWrap" <?=empty($publ['additional'])?'hidden':''?>>
+                    <div class="pbt-listIcon">
+                        <h3 class="pbt-listIcon__title">Дополнительно</h3>
+                        <ul class="pbt-listIcon__list">
+                            <?php foreach($publ['additional'] as $oneItem):?>
+                            <li class="pbt-listIcon__listItem"><span class="pbt-listIcon__icon" style="background-image: url(&quot;<?=$oneItem['img']?> &quot;) "></span><span class="pbt-listIcon__text"><?=$oneItem['name']?></span></li>
+                            <?php endforeach;?>
+                        </ul>
+                    </div>
+                </div>
+                <div class="officePage__list" <?=empty($publ['include_rent'])?'hidden':''?>>
+                    <div class="pbt-list">
+                        <h3 class="pbt-list__listTitle">Включено в аренду</h3>
+                        <ul class="pbt-list__list">
+                            <?php foreach($publ['include_rent'] as $oneItem):?>
+                            <li class="pbt-list__listItem"><?=$oneItem?></li>
+                            <?php endforeach;?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="description">
+    <div class="container description__container">
+        <div class="description__content">
+            <h2 class="description__title">Описание</h2>
+            <div class="description__textBlock">
+                <?php $text=explode("\n",$publ['description']);foreach($text as $oneItem):?>
+                <p class="description__text"><?=$oneItem?></p>
+                <?php endforeach;?>
+            </div>
+        </div>
+        <div class="description__plan" style="background-image: url(&quot;<?=$publ['schemes'][0] ?? ''?> &quot;) ">
+            <div class="description__loop"></div>
+        </div>
+    </div>
+</section>
+<section class="location">
+    <div class="container location__container">
+        <div class="location__map" id="location__map" data-content="{{ siteProps.contacts.coordinate.x }},{{ siteProps.contacts.coordinate.y }}"></div>
+        <div class="location__content">
+            <div class="pbt-table location__place">
+                <h3 class="pbt-table__tableTitle">Расположение</h3>
+                <table class="pbt-table__table">
+                    <tr class="pbt-table__row">
+                        <td class="pbt-table__cell pbt-table__cell--left">Город</td>
+                        <td class="pbt-table__cell pbt-table__cell--right"><?=$publ['object']['address']['city']['name'] ?? '-'?></td>
+                    </tr>
+                    <tr class="pbt-table__row">
+                        <td class="pbt-table__cell pbt-table__cell--left">Адрес</td>
+                        <td class="pbt-table__cell pbt-table__cell--right">ул. <?=$publ['object']['address']['street']['name'] ?? '-'?> д. <?=$publ['object']['address']['house']['name'] ?? '-'?></td>
+                    </tr>
+                    <tr class="pbt-table__row">
+                        <td class="pbt-table__cell pbt-table__cell--left">Район</td>
+                        <td class="pbt-table__cell pbt-table__cell--right"><?=$publ['object']['address']['district']['name'] ?? '-'?></td>
+                    </tr>
+                </table>
+            </div>
+            <ul class="location__metroList" <?=empty($publ['object']['subway'])?'hidden':''?>>
+                <?php foreach ($publ['object']['subway'] as $oneSubw):?>
+                <li class="location__metroItem"><span class="location__subwayIcon" style="background-image: url(&quot;./img/metro_orange.png &quot;) "></span><span class="location__subwayName"><?=$oneSubw['name']?></span><span class="location__typeTime location__typeTime--<?=$oneSubw['time_type']==1?foot:car?>"></span><span class="location__time"><?=$oneSubw['time']?> мин.</span></li>
+            <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
+</section>
+<div class="feedback" {% if (not elements.Данные.active) %} hidden {% endif %}>
+    <div class="feedback__banner" style="background-image: url(&quot;{{elements.Фото_блока.data.img}} &quot;) ">
+        <div class="container feedback__container">
+            <form class="feedback__form" id="mainP-feedback" action="#" method="get">
+                <h3 class="feedback__formTitle">Хотите узнать подробнее</h3>
+                {%  for input in elements.Данные.data.options %}
+                {% if input.label=='Ваше имя' and input.active  %}
+                <input class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--name" id="name" name="name" type="text" placeholder="Ваше имя" autocomplete="on" required>
+                {% elseif input.label=='Телефон' and input.active %}
+                <input class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--phone" id="phone" name="phone" type="tel" placeholder="Телефон" autocomplete="on" required>
+                {% endif %}
+                {% endfor %}
+                <div class="checkbox feedback__checkbox" checked>
+                    <input class="checkbox__input" type="checkbox" name="processing" id="checkbox_processing" checked>
+                    <label class="checkbox__label" for="checkbox_processing">Я согласен на обработку моих пресональных данных<span class="feedback__span">в соответствии с</span><br><a class="feedback__link" href="#"><span>Пользовательским соглашением</span></a>
+                    </label>
+                </div>
+                <button class="btn feedback__btn" type="submit" name="feedback">Отправить</button>
+            </form>
+        </div>
+    </div>
+</div>

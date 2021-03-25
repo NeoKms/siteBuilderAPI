@@ -1,0 +1,63 @@
+<section class="feedback" {% if (not active) %} hidden {% endif %} {% if (not elements.Форма_обратной_связи.active) %} hidden {% endif %}>
+    <div class="container" {% if (not elements.Заголовок.active) %} hidden {% endif %}>
+        <h2 class="title feedback__title">{{ elements.Заголовок.data.value }}</h2>
+    </div>
+    <div class="feedback__fill">
+        <div class="container feedback__containerFill">
+            <div class="feedback__wrapperFill">
+                <div class="feedback__img feedback__img--left" style="background-image: url(&quot;{{elements.Фото_блока.data.img }}&quot;) " {% if (not elements.Фото_блока.active) %} hidden {% endif %}></div>
+                <div class="contentBlock-feedbackForm feedback__formFill">
+                    <form class="contentBlock-feedbackForm__form" action="#" type="get" id="feedbackForm">
+                        {# 0 - тип формы. 1 - фон. 2 - ланные формы #}
+                        {%  for input in elements.Форма_обратной_связи.data.include[2].options %}
+                            {% if input.label=='Ваше имя' and input.active  %}
+                                <input class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--name" id="name" name="name" type="text" placeholder="Ваше имя" autocomplete="on" required>
+                            {% elseif input.label=='Телефон' and input.active %}
+                                <input class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--phone" id="phone" name="phone" type="tel" placeholder="Телефон" autocomplete="on" required>
+                            {% elseif input.label=='E-mail' and input.active %}
+                                <input class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--mail" id="mail" name="mail" type="email" placeholder="E-mail" autocomplete="on" required>
+                            {% elseif input.label=='Город' and input.active %}
+                                <input class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--city" id="city" name="city" type="text" placeholder="Город" required>
+                            {% elseif input.label=='Название организации' and input.active %}
+                                <input class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--org" id="org" name="org" type="text" placeholder="Название организации" required>
+                            {% elseif input.label=='Комментарий' and input.active %}
+                                <label class="contentBlock-feedbackForm__label" for="comment">Комментарий</label>
+                                <textarea class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--comment" id="comment" name="comment" rows="5" required></textarea>
+                            {% elseif input.label=='Площадь' and input.active %}
+                                <label class="contentBlock-feedbackForm__label" for="priceFrom">Цена, Р/м2</label>
+                                <input class="contentBlock-feedbackForm__input visually-hidden" id="priceFrom" name="priceFrom" type="text" required>
+                                <input class="contentBlock-feedbackForm__input visually-hidden" id="priceTo" name="priceTo" type="text" required>
+                                <div class="range-value" id="range-valuePrice"></div>
+                                <div class="range-wrap" id="rangePrice"></div>
+                            {% elseif input.label=='Цена' and input.active %}
+                                <label class="contentBlock-feedbackForm__label" for="squareFrom">Площадь, м2</label>
+                                <input class="contentBlock-feedbackForm__input visually-hidden" id="squareFrom" name="squareFrom" type="text" required>
+                                <input class="contentBlock-feedbackForm__input visually-hidden" id="squareTo" name="squareTo" type="text" required>
+                                <div class="range-value" id="range-valueSquare"></div>
+                                <div class="range-wrap" id="rangeSquare"></div>
+                            {% endif %}
+                        {% endfor %}
+                        {% if not siteProps.api_keys.recaptcha_public == '' %}
+                        <div class="g-recaptcha" data-sitekey="{{siteProps.api_keys.recaptcha_public}}"></div>
+                        <script>
+                            $('#feedbackForm').submit(function( event ) {
+                                if (grecaptcha.getResponse()==='') {
+                                    alert('Капча не пройдена');
+                                    return false;
+                                }
+                            });
+                        </script>
+                        {% endif %}
+                        <input class="contentBlock-feedbackForm__input visually-hidden" id="type" name="type" type="text" value="{{ elements.Форма_обратной_связи.data.include[0].value }}" required>
+                        <div class="checkbox contentBlock-feedbackForm__checkbox" checked>
+                            <input class="checkbox__input" type="checkbox" name="processing" id="checkbox_processing" checked>
+                            <label class="checkbox__label" for="checkbox_processing"> Я даю согласие на обработку своих персональных данных <span class="contentBlock-feedbackForm__span">в соответствии с<br><a class="contentBlock-feedbackForm__link" href="#"><span>Пользовательским соглашением</span></a></span>
+                            </label>
+                        </div>
+                        <button class="btn secondary contentBlock-feedbackForm__btn" type="submit">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

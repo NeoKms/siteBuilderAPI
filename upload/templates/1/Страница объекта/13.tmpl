@@ -1,0 +1,132 @@
+<div class="breadcrumbs" {% if (not breadcrumbs) %} hidden {% endif %}>
+    <div class="container breadcrumbs__container"><a class="breadcrumbs__link" href="./"><span>Главная</span></a><span>></span><a class="breadcrumbs__link" href="./Publikacii.php"><span>Помещения</span></a><span>></span>
+    </div>
+</div>
+<?php $publ = $fa->getPubl($_REQUEST['id']); ?>
+<section class="office-info" {% if (not active) %} hidden {% endif %}>
+    <div class="container office-info__container">
+        <h2 class="title office-info__title">ПОМЕЩЕНИЕ<span><?=$publ['sqr']?> м²</span></h2>
+        <div class="office-info__infoBlock">
+            <h3 class="title office-info__subtitle">ХАРАКТЕРИСТИКИ ПОМЕЩЕНИЯ</h3>
+            <div class="office-info__list">
+                <div class="office-info__item office-info--general">
+                    <div class="pbt-table">
+                        <h3 class="pbt-table__tableTitle">Общее</h3>
+                        <table class="pbt-table__table">
+                            <tr class="pbt-table__row">
+                                <td class="pbt-table__cell pbt-table__cell--left">Тип объекта</td>
+                                <td class="pbt-table__cell pbt-table__cell--right"><?=$publ['destination']?></td>
+                            </tr>
+                            <tr class="pbt-table__row">
+                                <td class="pbt-table__cell pbt-table__cell--left">Площадь</td>
+                                <td class="pbt-table__cell pbt-table__cell--right"><?=$publ['sqr']?> м²</td>
+                            </tr>
+                            <tr class="pbt-table__row">
+                                <td class="pbt-table__cell pbt-table__cell--left">Код</td>
+                                <td class="pbt-table__cell pbt-table__cell--right"><?=$publ['name']?></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="office-info__item office-info__item--extra" <?=empty($publ['additional'])?'hidden':''?>>
+                    <div class="pbt-listIcon">
+                        <h3 class="pbt-listIcon__title">Дополнительно</h3>
+                        <ul class="pbt-listIcon__list">
+                            <?php if(in_array('Паркинг',$publ['additional'])):?>
+                            <li class="pbt-listIcon__listItem">
+                                <svg class="icon icon__parking pbt-listIcon__icon">
+                                    <use xlink:href="#parking"></use>
+                                </svg><span class="pbt-listIcon__text">Паркинг</span>
+                            </li>
+                            <?php endif;?>
+                            <?php if(in_array('Доступ на объект',$publ['additional'])):?>
+                            <li class="pbt-listIcon__listItem">
+                                <svg class="icon icon__access pbt-listIcon__icon">
+                                    <use xlink:href="#access"></use>
+                                </svg><span class="pbt-listIcon__text">Доступ на объект</span>
+                            </li>
+                            <?php endif;?>
+                            <?php if(in_array('Круглосуточная охрана',$publ['additional'])):?>
+                            <li class="pbt-listIcon__listItem">
+                                <svg class="icon icon__security pbt-listIcon__icon">
+                                    <use xlink:href="#security"></use>
+                                </svg><span class="pbt-listIcon__text">Круглосуточная охрана</span>
+                            </li>
+                            <?php endif;?>
+                            <?php if(in_array('Кафе',$publ['additional'])):?>
+                            <li class="pbt-listIcon__listItem">
+                                <svg class="icon icon__cafe pbt-listIcon__icon">
+                                    <use xlink:href="#cafe"></use>
+                                </svg><span class="pbt-listIcon__text">Кафе</span>
+                            </li>
+                            <?php endif;?>
+                        </ul>
+                    </div>
+                </div>
+                <div class="office-info__item office-info__item--lacation">
+                    <div class="pbt-table">
+                        <h3 class="pbt-table__tableTitle">Расположение</h3>
+                        <table class="pbt-table__table">
+                            <tr class="pbt-table__row">
+                                <td class="pbt-table__cell pbt-table__cell--left">Город</td>
+                                <td class="pbt-table__cell pbt-table__cell--right"><?=$publ['object']['address']['city']['name'] ?? '-'?></td>
+                            </tr>
+                            <tr class="pbt-table__row">
+                                <td class="pbt-table__cell pbt-table__cell--left">Адрес</td>
+                                <td class="pbt-table__cell pbt-table__cell--right">ул. <?=$publ['object']['address']['street']['name'] ?? '-'?> д. <?=$publ['object']['address']['house']['name'] ?? '-'?></td>
+                            </tr>
+                            <tr class="pbt-table__row">
+                                <td class="pbt-table__cell pbt-table__cell--left">Район</td>
+                                <td class="pbt-table__cell pbt-table__cell--right"><?=$publ['object']['address']['district']['name'] ?? '-'?></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <?php if (!empty($publ['object']['subway'])):?>
+                    <ul class="office-info__metroList">
+                        <?php foreach($publ['object']['subway'] as $oneSubway):?>
+                        <li class="office-info__metroItem">
+                            <svg class="icon icon__metro office-info__subwayIcon" fill="<?=$oneSubway['line']['color']?>">
+                                <use xlink:href="#metro"></use>
+                            </svg><span class="office-info__subwayName"><?=$oneSubway['name']?></span>
+                            <svg class="icon icon__<?=$oneSubway['time_type']==1?'footsteps':'drive-time'?> office-info__typeTime">
+                                <use xlink:href="<?=$oneSubway['time_type']==1?'#footsteps':'#drive-time'?>"></use>
+                            </svg><span class="office-info__time"><?=$oneSubway['time']?> мин.</span>
+                        </li>
+                        <?php endforeach;?>
+                    </ul>
+                    <?php endif;?>
+                </div>
+                <?php if (!empty($publ['include_rent']) || !empty($publ['services'])):?>
+                <div class="office-info__item office-info__item--options">
+                    <div class="pbt-list office-info__options" <?=empty($publ['include_rent'])?'hidden':''?>>
+                        <h3 class="pbt-list__listTitle">Включено в аренду</h3>
+                        <ul class="pbt-list__list">
+                            <?php foreach($publ['include_rent'] as $oneItem):?>
+                            <li class="pbt-list__listItem"><?=$oneItem?></li>
+                            <?php endforeach;?>
+                        </ul>
+                    </div>
+                    <div class="pbt-list office-info__options" <?=empty($publ['services'])?'hidden':''?>>
+                        <h3 class="pbt-list__listTitle">Доступные услуги</h3>
+                        <ul class="pbt-list__list">
+                            <?php foreach($publ['services'] as $oneItem):?>
+                            <li class="pbt-list__listItem"><?=$oneItem?></li>
+                            <?php endforeach;?>
+                        </ul>
+                    </div>
+                </div>
+                <?php endif;?>
+            </div>
+        </div>
+    </div>
+    <?php if(!empty($publ['photos']) || !empty($publ['schemes'])):?>
+    <div class="office-info__sliderBlock">
+        <?php foreach($publ['photos'] as $oneItem):?>
+        <div class="office-info__sliderElem" style="background-image: url(&quot;<?=$oneItem?> &quot;) "></div>
+        <?php endforeach;?>
+        <?php foreach($publ['schemes'] as $oneItem):?>
+        <div class="office-info__sliderElem" style="background-image: url(&quot;<?=$oneItem?> &quot;) "></div>
+        <?php endforeach;?>
+    </div>
+    <?php endif;?>
+</section>

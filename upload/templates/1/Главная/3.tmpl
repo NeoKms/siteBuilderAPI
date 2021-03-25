@@ -1,0 +1,94 @@
+<section class="advantages" {% if (not elements.Преимущества.active) %} hidden {% endif %} {% if (not active) %} hidden {% endif %}>
+    <div class="container advantages__container">
+        <h2 class="title advantages__title">ПОЧЕМУ СТОИТ ОБРАТИТЬСЯ К НАМ</h2>
+        <div class="advantages__block">
+            {% for val in elements.Преимущества.data.value %}
+                {% if val=='Банкомат' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__ATM advantages__icon">
+                            <use xlink:href="#ATM"></use>
+                        </svg>
+                        <div class="advantages__name">Банкомат</div>
+                    </div>
+                {% elseif val=='Кафе' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__coffee_room advantages__icon">
+                            <use xlink:href="#coffee_room"></use>
+                        </svg>
+                        <div class="advantages__name">Кафе</div>
+                    </div>
+                {% elseif val=='Видеонаблюдение' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__CCTV advantages__icon">
+                            <use xlink:href="#CCTV"></use>
+                        </svg>
+                        <div class="advantages__name">Видеонаблюдение</div>
+                    </div>
+                {% elseif val=='Конференц-зал' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__conference_room advantages__icon">
+                            <use xlink:href="#conference_room"></use>
+                        </svg>
+                        <div class="advantages__name">Конференц&nbsp-&nbspзал</div>
+                    </div>
+                {% elseif val=='Интернет, телефония' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__internet_telephony advantages__icon">
+                            <use xlink:href="#internet_telephony"></use>
+                        </svg>
+                        <div class="advantages__name">Интернет телефония</div>
+                    </div>
+                {% elseif val=='Доступ на объект' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__object_access advantages__icon">
+                            <use xlink:href="#object_access"></use>
+                        </svg>
+                        <div class="advantages__name">Доступ на объект</div>
+                    </div>
+                {% elseif val=='Паркинг' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__parking_icon advantages__icon">
+                            <use xlink:href="#parking_icon"></use>
+                        </svg>
+                        <div class="advantages__name">Паркинг</div>
+                    </div>
+                {% elseif val=='Энергоснабжение' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__power_supply advantages__icon">
+                            <use xlink:href="#power_supply"></use>
+                        </svg>
+                        <div class="advantages__name">Энергоснабжение</div>
+                    </div>
+                {% elseif val=='Аптека' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__pharmacy advantages__icon">
+                            <use xlink:href="#pharmacy"></use>
+                        </svg>
+                        <div class="advantages__name">Аптека</div>
+                    </div>
+                {% elseif val=='Круглосуточная охрана' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__security_icon advantages__icon">
+                            <use xlink:href="#security_icon"></use>
+                        </svg>
+                        <div class="advantages__name">Круглосуточная охрана</div>
+                    </div>
+                {% elseif val=='Магазин' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__shop advantages__icon">
+                            <use xlink:href="#shop"></use>
+                        </svg>
+                        <div class="advantages__name">Магазин</div>
+                    </div>
+                {% elseif val=='Супермаркет' %}
+                    <div class="advantages__item">
+                        <svg class="icon icon__supermarket advantages__icon">
+                            <use xlink:href="#supermarket"></use>
+                        </svg>
+                        <div class="advantages__name">Супермаркет</div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</section>

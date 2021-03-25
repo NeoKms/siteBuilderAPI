@@ -1,0 +1,44 @@
+<div class="historyInfo" {% if (not elements.История_здания.active) %} hidden {% endif %}>
+    <div class="container historyInfo__container">
+        <div class="historyInfo__title">
+           {{ elements.История_здания.data.title }}
+        </div>
+        <div class="historyInfo__content">
+            {% set countBlocks = elements.История_здания.data | length %}
+            {% set width = 100/countBlocks %}
+            {%  for block in elements.История_здания.data.block %}
+                {% set arr_text = block.value|split("\n") %}
+            {{ block.title }}
+                    <div class="historyInfo__block" style="width:{{width}}%">
+                        {% for text in arr_text %}
+                            <p class="historyInfo__item">{{ text }}</p>
+                        {% endfor %}
+                    </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+<div class="feedback" {% if (not elements.Данные.active) %} hidden {% endif %}>
+    <div class="feedback__banner" style="background-image: url(&quot;{{elements.Фото_блока.data.img}} &quot;) ">
+        <div class="container feedback__container">
+            <form class="feedback__form" id="mainP-feedback" action="#" method="get">
+                <h3 class="feedback__formTitle">Хотите узнать подробнее</h3>
+                {%  for input in elements.Данные.data.options %}
+                {% if input.label=='Ваше имя' and input.active  %}
+                <input class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--name" id="name" name="name" type="text" placeholder="Ваше имя" autocomplete="on" required>
+                {% elseif input.label=='Телефон' and input.active %}
+                <input class="contentBlock-feedbackForm__input contentBlock-feedbackForm__input--phone" id="phone" name="phone" type="tel" placeholder="Телефон" autocomplete="on" required>
+                {% endif %}
+                {% endfor %}
+                <div class="checkbox feedback__checkbox" checked>
+                    <input class="checkbox__input" type="checkbox" name="processing" id="checkbox_processing" checked>
+                    <label class="checkbox__label" for="checkbox_processing">Я согласен на обработку моих пресональных данных<span class="feedback__span">в соответствии с</span><br><a class="feedback__link" href="#"><span>Пользовательским соглашением</span></a>
+                    </label>
+                </div>
+                <button class="btn feedback__btn" type="submit" name="feedback">Отправить</button>
+            </form>
+        </div>
+    </div>
+</div>
