@@ -99,7 +99,7 @@ sites.changeActive = async (id, val) => {
     let res;
     try {
         connection = await process.dbPool.connection();
-        await connection.query("update `sites` set `active`=? where `id`=?", [val,id]);
+        await connection.query("update `sites` set `active`=?, `processing`=0 where `id`=?", [val,id]);
     } catch (err) {
         logger.error(err, 'sites.changeActive:');
         throw err;

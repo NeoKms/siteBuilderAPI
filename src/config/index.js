@@ -11,7 +11,7 @@ if (!PRODUCTION) {
 
 const PORT = env.PORT
 
-const COOKIE_DOMAIN = env.COOKIE_DOMAIN || 'dev.lan';
+const COOKIE_DOMAIN = env.COOKIE_DOMAIN;
 
 const REDIS = {
     HOST: env.REDIS_HOST,

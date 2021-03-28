@@ -296,9 +296,9 @@ module.exports = (app, passport, client) => {
                     if (result.active) {
                         rabbitQueues.toDataProcessor({
                             site_id: result.id,
-                            template_id: siteData.template.id,
+                            template_id: result.template.id,
                             type: 'update',
-                            domain: siteData.address,
+                            domain: result.address,
                         })
                     }
                     res.json({message: 'ok', result})
