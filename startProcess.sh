@@ -16,6 +16,8 @@ npm install
 #migrations
 db-migrate up
 
+npm run apidoc
+
 echo $1
 
 r1=$(ps aux | grep $1.js | grep -v grep)
