@@ -21,6 +21,8 @@ RUN cd /var \
 	&& rm package-lock.json \
 	&& npm install
 
+WORKDIR /var/siteBuilderAPI
+
 #nodemon
 RUN npm install pm2@latest -g
 RUN npm install -g db-migrate
