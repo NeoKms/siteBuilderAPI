@@ -3,8 +3,8 @@ const config = require('../config');
 const logger = require('./logger');
 
 const connection = amqp.connect([config.RABBIT.URL]);
-connection.on('connect', () => console.log('RabbitMQ Connected!'));
-connection.on('disconnect', err => console.log('RabbitMQ  Disconnected.', err));
+connection.on('connect', () => logger.info('RabbitMQ Connected!'));
+connection.on('disconnect', err =>  logger.info('RabbitMQ  Disconnected.', err));
 
 function createWriter(name) {
     const writer = connection.createChannel({

@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon app.js --ignore 'upload/*",
     "start": "node app.js",
-    "apidoc": "apidoc -i src/ -o doc/"
+    "apidoc": "apidoc -i src/ -o doc/",
+    "test": "mocha index.test.js --exit"
   },
   "nodemonConfig": {
     "ignore": [
@@ -20,8 +21,11 @@
     "amqp-connection-manager": "^3.2.2",
     "amqplib": "^0.7.1",
     "apidoc": "^0.26.0",
+    "assert": "^2.0.0",
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
     "connect-redis": "^5.1.0",
     "cookie": "^0.4.1",
     "cookie-parser": "^1.4.5",
@@ -31,6 +35,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "log4js": "^6.3.0",
+    "mocha": "^8.3.2",
     "mysql": "^2.18.1",
     "passport": "^0.4.1",
     "passport-json": "^1.2.0",

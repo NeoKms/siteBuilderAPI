@@ -33,4 +33,10 @@ logger.error = function (error, ...args) {
     }
 };
 
+if (process.env.IS_TEST) {
+    logger.error = ()=>{}
+    logger.info = ()=>{}
+    logger.debug = ()=>{}
+}
+
 module.exports = logger;
