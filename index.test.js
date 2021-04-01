@@ -98,7 +98,12 @@ describe("Тест шаблонов", () => {
                     const respdata = response.data
 
                     expect(respdata, 'Ответ апи должен быть успешным').to.have.property('message').equal('ok')
-                    expect(respdata.result, 'Картинки должны быть массивом').to.be.an('array')
+
+                    if (process.env.IS_FAIL) {
+                        expect(respdata.result, 'Картинки должны быть массивом').to.be.an('string')
+                    } else {
+                        expect(respdata.result, 'Картинки должны быть массивом').to.be.an('array')
+                    }
 
                     imgArr = respdata.result
                 })
