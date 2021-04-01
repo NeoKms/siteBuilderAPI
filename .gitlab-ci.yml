@@ -13,7 +13,10 @@ test:
     - sed -i "s/__JOBNAME__/site-builder-api-test-$CI_COMMIT_SHORT_SHA/" k8s_test.yaml
     - kubectl create -f k8s_test.yaml
     - kubectl describe jobs -n default | grep "Pods Statuses"
-    - kubectl wait --for=condition=complete --timeout=30s -n default job/site-builder-api-test-$CI_COMMIT_SHORT_SHA
+    - kubectl wait --for=condition=complete --timeout=1m -n default job/site-builder-api-test-$CI_COMMIT_SHORT_SHA
+    - pods=$(kubectl get pods -n default --selector=job-name=site-builder-api-test-$CI_COMMIT_SHORT_SHA --output=jsonpath='{.items[*].metadata.name}')
+    - kubectl logs -n default $pods
+    - kubectl delete -f k8s_test.yaml
 
 
 deploy to production:

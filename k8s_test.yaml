@@ -6,6 +6,8 @@ metadata:
   labels:
     purpose: test
 spec:
+  ttlSecondsAfterFinished: 86400
+  backoffLimit: 1
   template:
     metadata:
       name: __JOBNAME__
@@ -15,6 +17,8 @@ spec:
           imagePullPolicy: Always
           name: __JOBNAME__
           env:
+#            - name: IS_FAIL
+#              value: "true"
             - name: PRODUCTION
               valueFrom:
                 configMapKeyRef:
