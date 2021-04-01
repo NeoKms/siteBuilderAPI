@@ -4,14 +4,17 @@ stages:
 
 test:
   image: gcr.io/cloud-builders/kubectl:latest
-  stage: deploy
+  stage: test
   script:
     - kubectl config set-cluster k8s --server="$KUBE_URL" --insecure-skip-tls-verify=true
     - kubectl config set-credentials admin --token="$KUBE_TOKEN"
     - kubectl config set-context default --cluster=k8s --user=admin
     - kubectl config use-context default
-    - sed -i "s/__VERSION__/gitlab-$CI_COMMIT_SHORT_SHA/" k8s.yaml
-    - kubectl apply -f k8s.yaml
+    - sed -i "s/__JOBNAME__/site-builder-api-test-$CI_COMMIT_SHORT_SHA/" k8s_test.yaml
+    - kubectl create -f k8s_test.yaml
+    - kubectl describe jobs -n default | grep "Pods Statuses"
+    - kubectl wait --for=condition=complete --timeout=30s -n default job/site-builder-api-test-$CI_COMMIT_SHORT_SHA
+
 
 deploy to production:
   only:
