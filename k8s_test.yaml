@@ -1,0 +1,104 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: __JOBNAME__
+  namespace: default
+  labels:
+    purpose: test
+spec:
+  template:
+    metadata:
+      name: __JOBNAME__
+    spec:
+      containers:
+        - image: upachko/site_builder_api:latest
+          imagePullPolicy: Always
+          name: __JOBNAME__
+          env:
+            - name: PRODUCTION
+              valueFrom:
+                configMapKeyRef:
+                  name: server-type
+                  key: PRODUCTION
+            - name: COOKIE_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: server-type
+                  key: COOKIE_DOMAIN
+            #db
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: dbase-default
+                  key: HOST
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: dbase-default
+                  key: NAME
+            - name: DB_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: dbase-default
+                  key: PASSWORD
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: dbase-default
+                  key: PORT
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: dbase-default
+                  key: USER
+            #main
+            - name: SENTRY_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: api-default
+                  key: SENTRY_KEY
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: api-default
+                  key: PORT
+            - name: AUTH_LOGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: api-default
+                  key: LOGIN
+            - name: AUTH_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: api-default
+                  key: PASSWORD
+            #wss
+            - name: WEBSOCKET_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: wsserver-default
+                  key: HOST
+            #rabbit
+            - name: RABBIT_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: api-default
+                  key: RABBIT_USER
+            - name: RABBIT_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbit-default
+                  key: HOST
+            #redis
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-default
+                  key: HOST
+            - name: REDIS_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: redis-default
+                  key: PORT
+          command: ["npm", "test"]
+      restartPolicy: Never
