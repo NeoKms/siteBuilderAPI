@@ -91,6 +91,9 @@ describe("Тест шаблонов", () => {
         it('Первая картинка доступна', () => {
             return axios.get(`${localApiUrl}/${imgArr[0]}`, authCookie)
         })
+    })
+
+    describe("Тест работы с шаблонами", () => {
 
         it("Получение списка шаблонов", () => {
             return axios.get(`${localApiUrl}/templates/`, authCookie)
@@ -108,5 +111,7 @@ describe("Тест шаблонов", () => {
                     imgArr = respdata.result
                 })
         })
+        
     })
+
 })
