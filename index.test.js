@@ -1,3 +1,4 @@
+process.env.IS_TEST = true
 const app = require('./app')
 const axios = require('axios')
 const config = require('./src/config')
