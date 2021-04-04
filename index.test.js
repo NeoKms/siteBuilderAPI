@@ -1,4 +1,3 @@
-process.env.IS_TEST = true
 const app = require('./app')
 const axios = require('axios')
 const config = require('./src/config')
@@ -103,15 +102,15 @@ describe("Тест шаблонов", () => {
                     expect(respdata, 'Ответ апи должен быть успешным').to.have.property('message').equal('ok')
 
                     if (process.env.IS_FAIL) {
-                        expect(respdata.result, 'Картинки должны быть массивом').to.be.an('string')
+                        expect(respdata.result, 'Список шаблонов должен быть массивом').to.be.an('string')
                     } else {
-                        expect(respdata.result, 'Картинки должны быть массивом').to.be.an('array')
+                        expect(respdata.result, 'Список шаблонов должен быть массивом').to.be.an('array')
                     }
 
                     imgArr = respdata.result
                 })
         })
-        
+
     })
 
 })
