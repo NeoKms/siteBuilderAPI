@@ -1,21 +1,24 @@
 const express = require('express');
-
+const config = require('../config')
 const router = express.Router();
 
 module.exports = (app, passport, client) => {
-    require('fs').readdirSync('./src/routes/modules').map( (module)=> {
-        app.use(`/${module.replace('.js', '')}`, require(`./modules/${module}`)(app, passport, client));
+    let dir = `${__dirname}/modules`
+    require('fs').readdirSync(dir).map(module => {
+        if (module==='index.js') return;
+        if (module.indexOf('.js')!==-1) {
+            router.use(`/${module.replace('.js', '')}`, require(`${dir}/${module}`)(app, passport, client));
+        } else {
+            router.use(`/${module}`, require(`${dir}/${module}`)(app, passport, client));
+        }
     });
-    app.use('/upload/sites/', express.static('./upload/sites/'));
-    app.use('/upload/templates/', express.static('./upload/templates/'));
-    app.use('/upload/testsite/', express.static('./upload/testsite/'));
+
+    app.use('/upload/sites/', express.static(config.U_DIRS.sites));
+    app.use('/upload/templates/', express.static(config.U_DIRS.templates));
+    app.use('/upload/images/', express.static(config.U_DIRS.images));
     app.use(router);
 
-    router.get('/', (req, res, next) => {
-        res.json({server: 'api is working'});
-    });
-
-    router.get('/date', (req, res) => {
-        res.json({date: new Date()});
+    router.get('/', (req, res) => {
+        res.json({server: 'api is working',date: new Date()});
     });
 }

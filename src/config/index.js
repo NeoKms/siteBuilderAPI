@@ -1,4 +1,5 @@
 const {env} = process;
+const fs = require('fs');
 
 const PRODUCTION = String(env.PRODUCTION || false).toLowerCase() == "true"
 
@@ -46,6 +47,8 @@ const AUTH = {
     PASSWORD: env.AUTH_PASSWORD,
 };
 
+const UPLOAD = env.UPLOAD
+
 module.exports = {
     PORT,
     REDIS,
@@ -58,4 +61,17 @@ module.exports = {
     PRODUCTION,
     AUTH,
     WEBSOCKET_HOST,
+    UPLOAD,
+    U_DIRS: {
+        'sites'     : checkStaticDir(UPLOAD + 'sites'),
+        'templates' : checkStaticDir(UPLOAD + 'templates'),
+        'images'    : checkStaticDir(UPLOAD + 'images'),
+    }
 };
+
+function checkStaticDir(dir) {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, 0744);
+    }
+    return dir
+}

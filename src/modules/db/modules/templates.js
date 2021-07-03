@@ -1,4 +1,5 @@
 const logger = require('../../../modules/logger');
+const db = require('../connect')
 const fs = require('fs')
 const templates = {};
 
@@ -6,7 +7,7 @@ templates.list = async () => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         res = await connection.query("SELECT `templates`.`name`,`templates`.`type` as `type_id`,`templates`.`active`,`templates`.`img`,`template_types`.`name` as `type_name`,`templates`.`id`  FROM `templates` INNER JOIN `template_types` on `templates`.`type`=`template_types`.`id` where `active`=1");
         res = await reabaseElem(res)
     } catch (err) {
@@ -21,7 +22,7 @@ templates.byId = async (id,conn) => {
     let connection;
     let res;
     try {
-        connection = conn || await process.dbPool.connection();
+        connection = conn || await db.connection();
         res = await connection.query("SELECT `templates`.`name`,`templates`.`type` as `type_id`,`templates`.`active`,`templates`.`img`,`template_types`.`name` as `type_name`,`templates`.`id`  FROM `templates` INNER JOIN `template_types` on `templates`.`type`=`template_types`.`id` where `templates`.`active`=1 and `templates`.`id`=?",[id]);
         res = await reabaseElem(res,true)
     } catch (err) {
