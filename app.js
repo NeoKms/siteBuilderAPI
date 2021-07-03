@@ -63,8 +63,6 @@ app
     .use(passport.initialize())
     .use(passport.session());
 
-process.dbPool = require('./src/modules/db/connect');
-
 require('./src/modules/passport')(passport);
 require('./src/routes')(app, passport, client);
 

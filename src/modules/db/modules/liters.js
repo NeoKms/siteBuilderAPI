@@ -1,11 +1,12 @@
 const logger = require('../../../modules/logger');
+const db = require('../connect')
 const liters = {};
 
 liters.list = async () => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         res = await connection.query("SELECT `id`,`name` from `liter` where `active`=1");
     } catch (err) {
         logger.error(err, 'liters.list:');
@@ -19,7 +20,7 @@ liters.byIds = async (ids) => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         res = await connection.query("SELECT * from `liter` where `active`=1 and `id` in (?)",[ids]);
     } catch (err) {
         logger.error(err, 'liters.byIds:');

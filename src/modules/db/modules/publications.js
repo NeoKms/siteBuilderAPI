@@ -1,11 +1,12 @@
 const logger = require('../../../modules/logger');
+const db = require('../connect')
 const publications = {};
 
 publications.list = async () => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         res = await connection.query("SELECT `id`,`name`,`sqr`,`destination`,`date`,`rate` from `publication` where `active`=1");
     } catch (err) {
         logger.error(err, 'publications.list:');
@@ -19,7 +20,7 @@ publications.byfilter = async (req) => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         let where = ['`active`=?']
         let params = [1]
         if ('ids' in req && req.ids.length) {
@@ -80,7 +81,7 @@ publications.setOnSite = async (arr, id, conn) => {
     let connection;
     let res;
     try {
-        connection = conn || await process.dbPool.connection();
+        connection = conn || await db.connection();
         let resNow = await connection.query("SELECT `publ_id` from `site_publications` where `site_id`=?", [id]);
         resNow = resNow.map(el => el.publ_id)
         let onDel = resNow.filter(el => !arr.includes(el))

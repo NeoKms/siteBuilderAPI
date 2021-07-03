@@ -1,4 +1,5 @@
 const logger = require('../../../modules/logger');
+const db = require('../connect')
 
 const user = {};
 
@@ -6,7 +7,7 @@ user.getAuth = async (userData) => {
     let connection;
     let res = false;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         res = await connection.query("SELECT `id`, `login` as `name`, `rights`, `email`, `phone`, `fio`  FROM `users` WHERE (`login` = ? or `phone` = ?) AND `password` = ?", [userData.username, userData.username, userData.password])
         if (res && res.length > 0) {
             res = res[0]

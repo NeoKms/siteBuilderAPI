@@ -52,11 +52,9 @@ module.exports = (app, passport, client) => {
         }
     });
 
-    app.use('/upload/images/', express.static('./upload/images/'));
-
     router.get('/images', isAccessRead(), async (req, res, next) => {
         try {
-            let items = fs.readdirSync('./upload/images').map(el=>`upload/images/${el}`);
+            let items = fs.readdirSync(config.U_DIRS.images).map(el=>`upload/images/${el}`);
             res.json({message: 'ok', result:items})
         } catch (error) {
             logger.error(error)

@@ -1,4 +1,5 @@
 const logger = require('../../../modules/logger');
+const db = require('../connect')
 const fs = require('fs')
 const template = require('./templates')
 const publ = require('./publications')
@@ -8,7 +9,7 @@ sites.siteList = async () => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         res = await connection.query("SELECT `id`,`type_id`,`name`,`active`,`img`,`address`,`processing` FROM `sites` ");
         res = await reabaseSite(res, connection)
     } catch (err) {
@@ -23,7 +24,7 @@ sites.getSite = async (id, build = false) => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         res = await connection.query("SELECT * FROM `sites` where `id`=?", [id]);
         res = await reabaseSite(res, connection, true, build)
         res = res[0]
@@ -39,7 +40,7 @@ sites.setSite = async (data) => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         data = await prepareToSave(data, connection)
         res = await connection.query("update `sites` set " + data[0].join(',') + " where `id`=?", data[1]);
     } catch (err) {
@@ -54,7 +55,7 @@ sites.newSite = async (name) => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         await connection.query("insert into `sites` (`name`) values (?)", [name]);
         res = await connection.query("SELECT LAST_INSERT_ID() as `id`");
         res = res[0].id
@@ -70,7 +71,7 @@ sites.delSite = async (id) => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         await connection.query("delete from `sites` where `id`=?", [id]);
     } catch (err) {
         logger.error(err, 'sites.getSite:');
@@ -84,7 +85,7 @@ sites.setProcessing = async (id, val) => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         await connection.query("update `sites` set `processing`=? where `id`=?", [val,id]);
     } catch (err) {
         logger.error(err, 'sites.setProcessing:');
@@ -98,7 +99,7 @@ sites.changeActive = async (id, val) => {
     let connection;
     let res;
     try {
-        connection = await process.dbPool.connection();
+        connection = await db.connection();
         await connection.query("update `sites` set `active`=?, `processing`=0 where `id`=?", [val,id]);
     } catch (err) {
         logger.error(err, 'sites.changeActive:');
