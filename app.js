@@ -57,7 +57,8 @@ app.use((req, res, next) => {
 app
     .use(bodyParser.urlencoded())
     .use(bodyParser.json())
-    .use(cookieParser());
+    .use(cookieParser())
+    .use(require('morgan')(':remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" - :response-time ms'));
 
 app
     .use(passport.initialize())
@@ -70,8 +71,6 @@ if (require('fs').existsSync('./doc/index.html')) {
     app.use(express.static('./doc'));
     app.use('/apidoc', express.static(__dirname + '/doc'));
 }
-
-app.use(express.static('./upload'));
 
 app.listen(config.PORT, '0.0.0.0', () => {
     logger.info(`server runing port: ${config.PORT}`);

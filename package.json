@@ -36,6 +36,7 @@
     "express-session": "^1.17.1",
     "log4js": "^6.3.0",
     "mocha": "^8.3.2",
+    "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "passport": "^0.4.1",
     "passport-json": "^1.2.0",
