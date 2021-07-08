@@ -95,12 +95,12 @@ sites.setProcessing = async (id, val) => {
     }
     return res
 };
-sites.changeActive = async (id, val) => {
+sites.changeActive = async (id, val, processing = 0) => {
     let connection;
     let res;
     try {
         connection = await db.connection();
-        await connection.query("update `sites` set `active`=?, `processing`=0 where `id`=?", [val,id]);
+        await connection.query("update `sites` set `active`=?, `processing`=? where `id`=?", [val,processing,id]);
     } catch (err) {
         logger.error(err, 'sites.changeActive:');
         throw err;
