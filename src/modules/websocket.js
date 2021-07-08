@@ -20,7 +20,7 @@ const getConnection = async function () {
     });
     socket.on('builder', (data) => {
         if ('site_id' in data && 'status' in data) {
-            db.sites.changeActive(data.site_id,data.status==='success'? 1 : 0)
+            db.sites.changeActive(data.site_id,  (data.status==='success' || data.status==='update') ? 1 : 0, data.status==='update' ? 1 : 0)
                 .catch(err=>logger.error(err))
         }
         logger.debug('socket builder = ', data);
