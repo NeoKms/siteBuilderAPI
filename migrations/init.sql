@@ -313,7 +313,7 @@ CREATE TABLE `templates` (
 --
 
 INSERT INTO `templates` (`id`, `name`, `type`, `active`, `img`) VALUES
-(1, 'Образование стандарт', 4, 1, 'upload/templates/1/preview.jpg');
+(1, 'Образование стандарт', 4, 1, 'upload/templates/1/preview');
 
 -- --------------------------------------------------------
 
