@@ -1,4 +1,4 @@
-{
+  {
   "style":[
     {
       "name":"Основные настройки шаблона",
@@ -13,25 +13,45 @@
             "options":[
               {
                 "value":"1",
-                "label":"Светлая №1",
-                "image":"https://images.unian.net/photos/2019_04/1556182748-8199.jpg?0.7433681880971192",
+                "label":"Светло-голубая",
+                "image":"",
                 "colors":[
-                  "#FFBF43",
-                  "#4690D5",
-                  "#204A71",
-                  "#F6F8FB",
-                  "#FFFFFF",
-                  "#2E3945"
+                  "#FFBF43"
                 ]
-              },
-              {
+              },{
                 "value":"2",
-                "label":"Светлая",
-                "image":"https://img.povar.ru/main/3d/bb/7f/7a/shashlik_iz_semgi_na_mangale-394128.jpg",
+                "label":"Светло-розоая",
+                "image":"",
                 "colors":[
-                  "#23322A",
-                  "#587364",
-                  "#EF4D23"
+                  "#FFBF43"
+                ]
+              },{
+                "value":"3",
+                "label":"Светло-зеленая",
+                "image":"",
+                "colors":[
+                  "#FFBF43"
+                ]
+              },{
+                "value":"4",
+                "label":"Темно-голубая",
+                "image":"",
+                "colors":[
+                  "#FFBF43"
+                ]
+              },{
+                "value":"5",
+                "label":"Темно-розовая",
+                "image":"",
+                "colors":[
+                  "#FFBF43"
+                ]
+              },{
+                "value":"6",
+                "label":"Темно-зеленая",
+                "image":"",
+                "colors":[
+                  "#FFBF43"
                 ]
               }
             ]
