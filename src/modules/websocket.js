@@ -9,7 +9,7 @@ let socket = null;
 const getConnection = async function () {
     if (socket) return socket;
     const sessionCookie = await auth();
-
+    console.log('try to connect: ',config.WEBSOCKET_HOST)
     socket = io(config.WEBSOCKET_HOST, {transports: ['websocket'], extraHeaders: {cookie: sessionCookie}});
 
     socket.on('connect', (data) => {
