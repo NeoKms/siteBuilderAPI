@@ -8,7 +8,7 @@ let socket = null;
 
 const getConnection = async function () {
     if (socket) return socket;
-    const sessionCookie = await auth();
+    const sessionCookie = await auth(true);
 
     socket = io(config.WEBSOCKET_HOST, {transports: ['websocket'], extraHeaders: {cookie: sessionCookie}});
 
@@ -17,6 +17,9 @@ const getConnection = async function () {
     });
     socket.on('disconnect', () => {
         logger.info('socket disconnect');
+        socket.close();
+        socket = null
+        getConnection()
     });
     socket.on('builder', (data) => {
         if ('site_id' in data && 'status' in data) {
