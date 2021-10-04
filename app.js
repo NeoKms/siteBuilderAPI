@@ -75,3 +75,5 @@ if (require('fs').existsSync('./doc/index.html')) {
 app.listen(config.PORT, '0.0.0.0', () => {
     logger.info(`server runing port: ${config.PORT}`);
 });
+
+module.exports = app

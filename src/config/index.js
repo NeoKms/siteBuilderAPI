@@ -10,7 +10,7 @@ if (!PRODUCTION) {
 }
 //
 
-const PORT = env.PORT
+const PORT = env.PORT || 3005
 
 const COOKIE_DOMAIN = env.COOKIE_DOMAIN;
 

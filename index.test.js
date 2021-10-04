@@ -1,6 +1,6 @@
 process.env.IS_TEST = true
 const app = require('./app')
-const axios = require('axios')
+const request = require('supertest')
 const config = require('./src/config')
 const cookie = require('cookie')
 const chai = require("chai")
@@ -8,20 +8,24 @@ const chaiAsPromised = require("chai-as-promised")
 chai.use(chaiAsPromised)
 const expect = chai.expect
 const assert = chai.assert
-let authCookie = {
-    timeout: 500,
-    headers: {
-        cookie: 'authCookie',
-    }
-}
-const localApiUrl = `http://localhost:${config.PORT}`
-
+let authCookie = 'authCookie'
+describe("Тест доступности", () => {
+    it("/ [GET]", async () => {
+        return request(app)
+            .get('/')
+            .expect(200)
+    })
+})
 describe("Тест авторизации", () => {
-    it("Прохождение авторизации", () => {
-        return axios.post(`${localApiUrl}/auth/login`, {
-            "username": config.AUTH.LOGIN,
-            "password": config.AUTH.PASSWORD,
-        }, authCookie)
+    it("Прохождение авторизации",async() => {
+        return request(app)
+            .post('/auth/login')
+            .set('cookie',authCookie)
+            .send({
+                "username": config.AUTH.LOGIN,
+                "password": config.AUTH.PASSWORD,
+            })
+            .expect(200)
             .then(response => {
                 const authData = response.data
 
@@ -36,29 +40,36 @@ describe("Тест авторизации", () => {
             })
     })
 
-    it("Прохождение аутентификации", () => {
-        return axios.get(`${localApiUrl}/auth/checkLogin`, authCookie)
+    it("Прохождение аутентификации",async () => {
+        return request(app)
+            .get('/auth/checkLogin')
+            .set('cookie',authCookie)
+            .expect(200)
     })
 
-    it("Логаут", () => {
-        return axios.get(`${localApiUrl}/auth/logout`, authCookie)
-            .then(noRes => {
-                return axios.get(`${localApiUrl}/auth/checkLogin`, authCookie)
-                    .then(res => {
-                        expect(res.status, 'Проверка аутентификации должна отдать код 403').to.equal(403)
-                    })
-                    .catch(err => err)
-            })
+    it("Логаут",async () => {
+        return request(app)
+            .get('/auth/logout')
+            .set('cookie',authCookie)
+            .expect(200)
+            .then(()=>request(app))
+            .get('/auth/checkLogin')
+            .set('cookie',authCookie)
+            .expect(403,'Проверка аутентификации после логаута должна отдать код 403')
     })
 })
 
 describe("Тест шаблонов", () => {
 
-    it("Прохождение авторизации", () => {
-        return axios.post(`${localApiUrl}/auth/login`, {
-            "username": config.AUTH.LOGIN,
-            "password": config.AUTH.PASSWORD,
-        }, authCookie)
+    it("Прохождение авторизации",async () => {
+        return request(app)
+            .get('/auth/login')
+            .set('cookie',authCookie)
+            .send({
+                "username": config.AUTH.LOGIN,
+                "password": config.AUTH.PASSWORD,
+            })
+            .expect(200)
             .then(response => {
                 const authData = response.data
 
@@ -76,8 +87,11 @@ describe("Тест шаблонов", () => {
     describe("Тест существования статики", () => {
         let imgArr = []
 
-        it("Получение списка картинок", () => {
-            return axios.get(`${localApiUrl}/templates/images`, authCookie)
+        it("Получение списка картинок",async () => {
+            return request(app)
+                .get('/templates/images')
+                .set('cookie',authCookie)
+                .expect(200)
                 .then(response => {
                     const respdata = response.data
 
@@ -88,15 +102,21 @@ describe("Тест шаблонов", () => {
                 })
         })
 
-        it('Первая картинка доступна', () => {
-            return axios.get(`${localApiUrl}/${imgArr[0]}`, authCookie)
+        it('Первая картинка доступна',async () => {
+            return request(app)
+                .get(`/${imgArr[0]}`)
+                .set('cookie',authCookie)
+                .expect(200)
         })
     })
 
     describe("Тест работы с шаблонами", () => {
 
         it("Получение списка шаблонов", () => {
-            return axios.get(`${localApiUrl}/templates/`, authCookie)
+            return request(app)
+                .get('/templates/')
+                .set('cookie',authCookie)
+                .expect(200)
                 .then(response => {
                     const respdata = response.data
 
