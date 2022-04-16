@@ -1,33 +1,55 @@
 const logger = require('../../../modules/logger');
 const db = require('../connect')
-const objects = {};
+const DBWrapper = require("../../DBWrapper");
 
-objects.list = async () => {
-    let connection;
-    let res;
-    try {
-        connection = await db.connection();
-        res = await connection.query("SELECT `id`,`name` from `object` where `active`=1");
-    } catch (err) {
-        logger.error(err, 'objects.list:');
-        throw err;
-    } finally {
-        if (connection) await connection.release();
+module.exports = class Objects {
+    externalDB = {}
+
+    setExternalDB(external) {
+        this.externalDB = external
     }
-    return res
-};
-objects.byIds = async (ids) => {
-    let connection;
-    let res;
-    try {
-        connection = await db.connection();
-        res = await connection.query("SELECT * from `object` where `active`=1 and `id` in (?)",[ids]);
-    } catch (err) {
-        logger.error(err, 'objects.byIds:');
-        throw err;
-    } finally {
-        if (connection) await connection.release();
+
+    async __filter({select = [], filter = {}, hasarr = [], options = {}}, con) {
+        let connection, res = {};
+        try {
+            connection = await con || db.connection();
+            res = await new DBWrapper('object', connection, false).selectValue(select, filter, hasarr).orderBy(options).paginate(options).runQuery();
+        } catch (err) {
+            logger.error(err, 'liters.__filter:');
+            throw err;
+        } finally {
+            if (connection && !con) await connection.release();
+        }
+        return res
     }
-    return res
-};
-module.exports = objects;
+
+    async list() {
+        let connection, res = [];
+        try {
+            connection = await db.connection();
+            res = await this.__filter({select: ['id','name'],filter: {'active': 1}},connection)
+                .then(({queryResult})=>queryResult)
+        } catch (err) {
+            logger.error(err, 'objects.list:');
+            throw err;
+        } finally {
+            if (connection) await connection.release();
+        }
+        return res
+    }
+
+    async byIds(ids) {
+        let connection, res = [];
+        try {
+            connection = await db.connection();
+            res = await this.__filter({select: ['id','name'],filter: {'active': 1, '&id': ids}},connection)
+                .then(({queryResult})=>queryResult)
+        } catch (err) {
+            logger.error(err, 'objects.byIds:');
+            throw err;
+        } finally {
+            if (connection) await connection.release();
+        }
+        return res
+    }
+}

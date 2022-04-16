@@ -7,7 +7,7 @@ const {isAccessRead, isAccessWrite, isAccess} = require('../../modules/auth').ge
 
 const router = express.Router();
 
-module.exports = (app, passport, client) => {
+module.exports = (app) => {
     /**
      * @api {get} /templates Список шаблонов
      * @apiDescription Отдает список шаблонов со всеми данными

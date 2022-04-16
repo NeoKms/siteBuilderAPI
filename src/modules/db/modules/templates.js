@@ -1,53 +1,76 @@
 const logger = require('../../../modules/logger');
 const db = require('../connect')
 const fs = require('fs')
-const templates = {};
+const DBWrapper = require("../../DBWrapper");
 
-templates.list = async () => {
-    let connection;
-    let res;
-    try {
-        connection = await db.connection();
-        res = await connection.query("SELECT `templates`.`name`,`templates`.`type` as `type_id`,`templates`.`active`,`templates`.`img`,`template_types`.`name` as `type_name`,`templates`.`id`  FROM `templates` INNER JOIN `template_types` on `templates`.`type`=`template_types`.`id` where `active`=1");
-        res = await reabaseElem(res)
-    } catch (err) {
-        logger.error(err, 'templates.list:');
-        throw err;
-    } finally {
-        if (connection) await connection.release();
+module.exports = class Templates {
+    externalDB = {}
+
+    setExternalDB(external) {
+        this.externalDB = external
     }
-    return res
-};
-templates.byId = async (id,conn) => {
-    let connection;
-    let res;
-    try {
-        connection = conn || await db.connection();
-        res = await connection.query("SELECT `templates`.`name`,`templates`.`type` as `type_id`,`templates`.`active`,`templates`.`img`,`template_types`.`name` as `type_name`,`templates`.`id`  FROM `templates` INNER JOIN `template_types` on `templates`.`type`=`template_types`.`id` where `templates`.`active`=1 and `templates`.`id`=?",[id]);
-        res = await reabaseElem(res,true)
-    } catch (err) {
-        logger.error(err, 'templates.byId:');
-        throw err;
-    } finally {
-        if (!conn && connection) await connection.release();
-    }
-    return res
-};
-async function reabaseElem(res,withData=false) {
-    if (res && res.length) {
-        return res.map(el => {
-            if (withData) {
-                let templateData = {}
-                let templateDataPath = `./upload/templates/${el.id}/template.json`
-                if (fs.existsSync(templateDataPath)) {
-                    templateData = JSON.parse(fs.readFileSync(templateDataPath, 'utf8')) || {}
+
+    async __filter({select = [], filter = {}, hasarr = [], options = {}}, con) {
+        let connection, res = {};
+        try {
+            connection = await con || db.connection();
+            res = await new DBWrapper('templates', connection, false).selectValue(select, filter, hasarr).orderBy(options).paginate(options).runQuery();
+            if (Object.keys(res.has).length) {
+                for (let i = 0, c = res.queryResult.length; i < c; i++) {
+                    let item = res.queryResult[i]
+                    if (res.has.templateData) {
+                        let templateData = {}
+                        let templateDataPath = `./upload/templates/${item.id}/template.json`
+                        if (fs.existsSync(templateDataPath)) {
+                            templateData = JSON.parse(fs.readFileSync(templateDataPath, 'utf8')) || {}
+                        }
+                        item = Object.assign(item,templateData)
+                    }
                 }
-                el = Object.assign(templateData,el)
             }
-            return el
-        })
-    } else {
+        } catch (err) {
+            logger.error(err, 'liters.__filter:');
+            throw err;
+        } finally {
+            if (connection && !con) await connection.release();
+        }
+        return res
+    }
+
+    async list() {
+        let connection;
+        let res;
+        try {
+            connection = await db.connection();
+            res = this.__filter({
+                select: ['name', 'type_id', 'active', 'img', 'type_name', 'id'],
+                filter: {'active': 1},
+            }, connection).then(({queryResult}) => queryResult)
+        } catch (err) {
+            logger.error(err, 'templates.list:');
+            throw err;
+        } finally {
+            if (connection) await connection.release();
+        }
+        return res
+    }
+
+    async byId(id, conn) {
+        let connection;
+        let res;
+        try {
+            connection = conn || await db.connection();
+            res = this.__filter({
+                select: ['name', 'type_id', 'active', 'img', 'type_name', 'id','templateData'],
+                filter: {'active': 1, 'id': id},
+                hasarr: ['templateData']
+            }, connection).then(({queryResult}) => queryResult)
+        } catch (err) {
+            logger.error(err, 'templates.byId:');
+            throw err;
+        } finally {
+            if (!conn && connection) await connection.release();
+        }
         return res
     }
 }
-module.exports = templates;
