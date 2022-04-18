@@ -178,7 +178,6 @@ module.exports = class Sites {
 
     async delSite(id) {
         let connection;
-        let res;
         try {
             connection = await db.connection();
             await connection.query("delete from `sites` where `id`=?", [id]);
@@ -188,12 +187,10 @@ module.exports = class Sites {
         } finally {
             if (connection) await connection.release();
         }
-        return res
     };
 
     async setProcessing(id, val) {
         let connection;
-        let res;
         try {
             connection = await db.connection();
             await connection.query("update `sites` set `processing`=? where `id`=?", [val, id]);
@@ -203,12 +200,10 @@ module.exports = class Sites {
         } finally {
             if (connection) await connection.release();
         }
-        return res
     };
 
     async changeActive(id, val, processing = 0) {
         let connection;
-        let res;
         try {
             connection = await db.connection();
             await connection.query("update `sites` set `active`=?, `processing`=? where `id`=?", [val, processing, id]);
@@ -218,7 +213,6 @@ module.exports = class Sites {
         } finally {
             if (connection) await connection.release();
         }
-        return res
     };
 
     async prepareToSave(data, conn) {
