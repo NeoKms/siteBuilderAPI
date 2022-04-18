@@ -1,5 +1,6 @@
 const logger = require('../../../modules/logger');
 const db = require('../connect');
+const DBWrapper = require("../../DBWrapper");
 
 module.exports = class Publications {
     externalDB = {}
@@ -8,12 +9,47 @@ module.exports = class Publications {
         this.externalDB = external
     }
 
+    async __filterSitePubl({select = [], filter = {}, hasarr = [], options = {}}, con) {
+        let connection, res = {};
+        try {
+            connection = await con || db.connection();
+            res = await new DBWrapper('site_publications', connection, false).selectValue(select, filter, hasarr).orderBy(options).paginate(options).runQuery();
+        } catch (err) {
+            logger.error(err, 'publications.__filterSitePubl:');
+            throw err;
+        } finally {
+            if (connection && !con) await connection.release();
+        }
+        return res
+    }
+
+    async __filter({select = [], filter = {}, hasarr = [], options = {}}, con) {
+        let connection, res = {};
+        try {
+            connection = await con || db.connection();
+            res = await new DBWrapper('publication', connection, false).selectValue(select, filter, hasarr).orderBy(options).paginate(options).runQuery();
+        } catch (err) {
+            logger.error(err, 'publications.__filter:');
+            throw err;
+        } finally {
+            if (connection && !con) await connection.release();
+        }
+        return res
+    }
+
     async list() {
         let connection;
         let res;
         try {
             connection = await db.connection();
-            res = await connection.query("SELECT `id`,`name`,`sqr`,`destination`,`date`,`rate` from `publication` where `active`=1");
+            res = await this.__filter({
+                select: [
+                    `id`, `name`, `sqr`, `destination`, `date`, `rate`
+                ],
+                filter: {
+                    'active': 1
+                }
+            }, connection).then(({queryResult}) => queryResult)
         } catch (err) {
             logger.error(err, 'publications.list:');
             throw err;
@@ -23,59 +59,52 @@ module.exports = class Publications {
         return res
     }
 
-    async byfilter(req) {
+    async byfilter(req={}) {
         let connection;
         let res;
         try {
             connection = await db.connection();
-            let where = ['`active`=?']
-            let params = [1]
+            let filter = {
+                'active': 1
+            }, select = [`id`, `name`, `sqr`, `destination`, `date`, `rate`], hasarr = [];
             if ('ids' in req && req.ids.length) {
-                where.push('`id` in (?)')
-                params.push(req.ids)
+                filter['&id'] = req.ids;
             }
             if ('sqr' in req && req.sqr.length === 2) {
                 if (req.sqr[0] !== '') {
-                    where.push('`sqr`>=?')
-                    params.push(req.sqr[0])
+                    filter['>=sql'] = req.sqr[0]
                 }
                 if (req.sqr[1] !== '') {
-                    where.push('`sqr`<=?')
-                    params.push(req.sqr[1])
+                    filter['<=sql'] = req.sqr[1]
                 }
             }
             if ('rate' in req && req.rate.length === 2) {
                 if (req.rate[0] !== '') {
-                    where.push('`rate`>=?')
-                    params.push(req.rate[0])
+                    filter['>=rate'] = req.rate[0]
                 }
                 if (req.rate[1] !== '') {
-                    where.push('`rate`<=?')
-                    params.push(req.rate[1])
+                    filter['>=rate'] = req.rate[1]
                 }
             }
             if ('object_id' in req && req.object_id !== -1) {
-                where.push('`object_id`=?')
-                params.push(req.object_id)
+                filter['object_id'] = req.object_id
             }
             if ('liter_id' in req && req.liter_id !== -1) {
-                where.push('`liter_id`=?')
-                params.push(req.liter_id)
+                filter['liter_id'] = req.liter_id
             }
             if ('types' in req) {
                 let accessTypes = ['warehouse', 'office', 'manufacture']
                 for (let i = 0; i < req.types.length; i++) {
                     let type = req.types[i]
                     if (accessTypes.includes(type)) {
-                        where.push(`\`${type}\`=1`)
+                        filter[type] = 1
                     }
                 }
             }
-            let fields = '`id`,`name`,`sqr`,`destination`,`date`,`rate`'
             if ('build' in req) {
-                fields = '*'
+                select = [];
             }
-            res = await connection.query("SELECT " + fields + " from `publication` where " + where.join(' AND '), params);
+            res = await this.__filter({select, filter, hasarr}, connection).then(({queryResult}) => queryResult)
         } catch (err) {
             logger.error(err, 'publications.byfilter:');
             throw err;
@@ -90,7 +119,8 @@ module.exports = class Publications {
         let res;
         try {
             connection = conn || await db.connection();
-            let resNow = await connection.query("SELECT `publ_id` from `site_publications` where `site_id`=?", [id]);
+            let resNow = await this.__filterSitePubl({select: ['publ_id'],filter: {site_id: id}})
+                .then(({queryResult})=>queryResult)
             resNow = resNow.map(el => el.publ_id)
             let onDel = resNow.filter(el => !arr.includes(el))
             if (onDel.length) {
@@ -107,6 +137,5 @@ module.exports = class Publications {
         } finally {
             if (connection && !conn) await connection.release();
         }
-        return res
     }
 }

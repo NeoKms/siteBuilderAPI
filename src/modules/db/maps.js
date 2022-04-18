@@ -249,8 +249,418 @@ module.exports = {
         },
         tables: {}
     },
-    publications: {},
-    sites: {},
+    publication: {
+        map: {
+            id: {
+                item: "publication.id",
+                type: 'number',
+                table: false
+            },
+            name: {
+                item: "publication.name",
+                type: 'string',
+                table: false
+            },
+            active: {
+                item: "publication.active",
+                type: 'number',
+                table: false
+            },
+            liter_id: {
+                item: "publication.liter_id",
+                type: 'number',
+                table: false
+            },
+            object_id: {
+                item: "publication.object_id",
+                type: 'number',
+                table: false
+            },
+            gates: {
+                item: "publication.gates",
+                type: 'json',
+                table: false
+            },
+            photos: {
+                item: "publication.photos",
+                type: 'json',
+                table: false
+            },
+            action: {
+                item: "publication.action",
+                type: 'number',
+                table: false
+            },
+            warehouse: {
+                item: "publication.warehouse",
+                type: 'number',
+                table: false
+            },
+            office: {
+                item: "publication.office",
+                type: 'number',
+                table: false
+            },
+            manufacture: {
+                item: "publication.manufacture",
+                type: 'number',
+                table: false
+            },
+            window: {
+                item: "publication.window",
+                type: 'number',
+                table: false
+            },
+            shopwindow: {
+                item: "publication.shopwindow",
+                type: 'number',
+                table: false
+            },
+            panoramic: {
+                item: "publication.panoramic",
+                type: 'number',
+                table: false
+            },
+            taxAddedValue: {
+                item: "publication.taxAddedValue",
+                type: 'number',
+                table: false
+            },
+            utilities: {
+                item: "publication.utilities",
+                type: 'number',
+                table: false
+            },
+            redevelopment: {
+                item: "publication.redevelopment",
+                type: 'number',
+                table: false
+            },
+            repair: {
+                item: "publication.repair",
+                type: 'number',
+                table: false
+            },
+            legalAddress: {
+                item: "publication.legalAddress",
+                type: 'number',
+                table: false
+            },
+            videovision: {
+                item: "publication.videovision",
+                type: 'number',
+                table: false
+            },
+            internet: {
+                item: "publication.internet",
+                type: 'number',
+                table: false
+            },
+            electrification: {
+                item: "publication.electrification",
+                type: 'number',
+                table: false
+            },
+            parking: {
+                item: "publication.parking",
+                type: 'number',
+                table: false
+            },
+            accessFromObj: {
+                item: "publication.accessFromObj",
+                type: 'number',
+                table: false
+            },
+            security24: {
+                item: "publication.security24",
+                type: 'number',
+                table: false
+            },
+            atm: {
+                item: "publication.atm",
+                type: 'number',
+                table: false
+            },
+            cafe: {
+                item: "publication.cafe",
+                type: 'number',
+                table: false
+            },
+            conferenceHall: {
+                item: "publication.conferenceHall",
+                type: 'number',
+                table: false
+            },
+            farmacy: {
+                item: "publication.farmacy",
+                type: 'number',
+                table: false
+            },
+            shop: {
+                item: "publication.shop",
+                type: 'number',
+                table: false
+            },
+            supermarket: {
+                item: "publication.supermarket",
+                type: 'number',
+                table: false
+            },
+            productShop: {
+                item: "publication.productShop",
+                type: 'number',
+                table: false
+            },
+            ventilation: {
+                item: "publication.ventilation",
+                type: 'number',
+                table: false
+            },
+            heating: {
+                item: "publication.heating",
+                type: 'number',
+                table: false
+            },
+            heightFreightTransport: {
+                item: "publication.heightFreightTransport",
+                type: 'number',
+                table: false
+            },
+            liftCountPass: {
+                item: "publication.liftCountPass",
+                type: 'number',
+                table: false
+            },
+            liftCountCargo: {
+                item: "publication.liftCountCargo",
+                type: 'number',
+                table: false
+            },
+            conditioning: {
+                item: "publication.conditioning",
+                type: 'number',
+                table: false
+            },
+            firefighting: {
+                item: "publication.firefighting",
+                type: 'number',
+                table: false
+            },
+            firstline: {
+                item: "publication.firstline",
+                type: 'number',
+                table: false
+            },
+            subway: {
+                item: "publication.subway",
+                type: 'number',
+                table: false
+            },
+            column: {
+                item: "publication.column",
+                type: 'number',
+                table: false
+            },
+            ramp: {
+                item: "publication.ramp",
+                type: 'number',
+                table: false
+            },
+            advertising: {
+                item: "publication.advertising",
+                type: 'number',
+                table: false
+            },
+            cleaning: {
+                item: "publication.cleaning",
+                type: 'number',
+                table: false
+            },
+            height: {
+                item: "publication.height",
+                type: 'number',
+                table: false
+            },
+            layout: {
+                item: "publication.layout",
+                type: 'string',
+                table: false
+            },
+            condition: {
+                item: "publication.condition",
+                type: 'string',
+                table: false
+            },
+            typeOfContract: {
+                item: "publication.typeOfContract",
+                type: 'string',
+                table: false
+            },
+            destination: {
+                item: "publication.destination",
+                type: 'string',
+                table: false
+            },
+            pol: {
+                item: "publication.pol",
+                type: 'string',
+                table: false
+            },
+            wall: {
+                item: "publication.wall",
+                type: 'string',
+                table: false
+            },
+            comment: {
+                item: "publication.comment",
+                type: 'string',
+                table: false
+            },
+            rate: {
+                item: "publication.rate",
+                type: 'double',
+                table: false
+            },
+            description: {
+                item: "publication.description",
+                type: 'string',
+                table: false
+            },
+            polLoad: {
+                item: "publication.polLoad",
+                type: 'string',
+                table: false
+            },
+            columnPitch: {
+                item: "publication.columnPitch",
+                type: 'string',
+                table: false
+            },
+            craneBeam: {
+                item: "publication.craneBeam",
+                type: 'string',
+                table: false
+            },
+            sqr: {
+                item: "publication.sqr",
+                type: 'double',
+                table: false
+            },
+            gatesCount: {
+                item: "publication.gatesCount",
+                type: 'string',
+                table: false
+            },
+            date: {
+                item: "publication.date",
+                type: 'datetime',
+                table: false
+            },
+            floor_names: {
+                item: "publication.floor_names",
+                type: 'json',
+                table: false
+            },
+            pred_rate: {
+                item: "publication.pred_rate",
+                type: 'number',
+                table: false
+            },
+            schemes: {
+                item: "publication.schemes",
+                type: 'json',
+                table: false
+            },
+        },
+        tables: {}
+    },
+    sites: {
+        map: {
+            id: {
+                item: "sites.id",
+                type: 'number',
+                table: false
+            },
+            type_id: {
+                item: "sites.type_id",
+                type: 'number',
+                table: false
+            },
+            name: {
+                item: "sites.name",
+                type: 'string',
+                table: false
+            },
+            active: {
+                item: "sites.active",
+                type: 'number',
+                table: false
+            },
+            address: {
+                item: "sites.address",
+                type: 'string',
+                table: false
+            },
+            img: {
+                item: "sites.img",
+                type: 'string',
+                table: false
+            },
+            description: {
+                item: "sites.description",
+                type: 'string',
+                table: false
+            },
+            template_id: {
+                item: "sites.template_id",
+                type: 'number',
+                table: false
+            },
+            contacts: {
+                item: "sites.contacts",
+                type: 'json',
+                table: false
+            },
+            processing: {
+                item: "sites.processing",
+                type: 'number',
+                table: false
+            },
+            type: {
+                item: "JSON_OBJECT('options','[]','value',site_types.id)",
+                type: 'json',
+                table: 'site_types'
+            }
+        },
+        tables: {
+            site_types: {
+                item: 'left join site_types on site_types.id = sites.type_id',
+                link: false
+            }
+        }
+    },
+    site_types: {
+        map: {
+            value: {
+                item: "site_types.id",
+                type: 'number',
+                table: false
+            },
+            label: {
+                item: "site_types.name",
+                type: 'string',
+                table: false
+            },
+            code: {
+                item: "site_types.code",
+                type: 'string',
+                table: false
+            },
+        },
+        tables: {
+
+        }
+    },
     templates: {
         map: {
             id: {
@@ -326,6 +736,21 @@ module.exports = {
             phone: {
                 item: "users.phone",
                 type: 'string',
+                table: false
+            },
+        },
+        tables: {}
+    },
+    site_publications: {
+        map: {
+            publ_id: {
+                item: "site_publications.publ_id",
+                type: 'number',
+                table: false
+            },
+            site_id: {
+                item: "site_publications.site_id",
+                type: 'number',
                 table: false
             },
         },

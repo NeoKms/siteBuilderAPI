@@ -2,6 +2,7 @@ const logger = require('../../../modules/logger');
 const db = require('../connect');
 const fs = require('fs');
 const {getFiles, reinitImgInObj} = require('../../helpers');
+const DBWrapper = require("../../DBWrapper");
 
 module.exports = class Sites {
     externalDB = {}
@@ -10,13 +11,110 @@ module.exports = class Sites {
         this.externalDB = external
     }
 
+    async __filterSiteTypes({select = [], filter = {}, hasarr = [], options = {}}, con) {
+        let connection, res = {};
+        try {
+            connection = await con || db.connection();
+            res = await new DBWrapper('site_types', connection, false).selectValue(select, filter, hasarr).orderBy(options).paginate(options).runQuery();
+        } catch (err) {
+            logger.error(err, 'sites.__filterSiteTypes:');
+            throw err;
+        } finally {
+            if (connection && !con) await connection.release();
+        }
+        return res
+    }
+
+    async __filter({select = [], filter = {}, hasarr = [], options = {}}, con) {
+        let connection, res = {};
+        try {
+            connection = await con || db.connection();
+            let types = null
+            res = await new DBWrapper('sites', connection, false).selectValue(select, filter, hasarr).orderBy(options).paginate(options).runQuery();
+            if (Object.keys(res.has).length) {
+                for (let i = 0, c = res.queryResult.length; i < c; i++) {
+                    let item = res.queryResult[i]
+                    if (res.has.type_id && res.has.type) {
+                        if (types === null) {
+                            types = await this.__filterSiteTypes({}, connection)
+                        }
+                        item.type.options = types
+                    }
+                    if (res.has.img) {
+                        item.img = item.img || ''
+                    }
+                    if (res.has.address) {
+                        item.address = item.address || ''
+                    }
+                    if (res.has.contacts) {
+                        item.contacts = item.contacts || {
+                            "title": "",
+                            "phone": "",
+                            "city": "",
+                            "street": "",
+                            "house": "",
+                            "litera": "",
+                            "index": 0,
+                            "emailMain": "",
+                            "emailFeedback": "",
+                            "doubleMailing": 0,
+                            "coordinate": {"x": "", "y": ""}
+                        }
+                    }
+                    if (res.has.template_id) {
+                        let templateData = {}
+                        let templateDataPath = `./upload/sites/templateData_${item.id}.json`
+                        if (item.template_id > 0 && fs.existsSync(templateDataPath)) {
+                            templateData = JSON.parse(fs.readFileSync(templateDataPath, 'utf8')) || {}
+                        }
+                        item.template = templateData
+                    }
+
+                    if (res.has.oneSite && res.has.template_id) {
+                        item.publications = await this.externalDB.publications.__filterSitePubl({
+                            select: ['publ_id'],
+                            filter: {
+                                'site_id': item.id
+                            }
+                        }, connection).then(({queryResult}) => queryResult)
+                        item.publications.forEach(el => {
+                            el.id = el.publ_id;
+                            delete el.id
+                        })
+                        if (res.has.build) {
+                            const files = await getFiles(`upload/templates/${item.template_id}/`);
+                            item.download = [
+                                {
+                                    name: `site.settings.json`,
+                                    path: `upload/sites/templateData_${item.id}.json`
+                                },
+                                {
+                                    name: 'template.json',
+                                    path: `upload/templates/${item.template_id}/template.json`
+                                },
+                                ...files
+                            ]
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            logger.error(err, 'sites.__filter:');
+            throw err;
+        } finally {
+            if (connection && !con) await connection.release();
+        }
+        return res
+    }
+
     async siteList() {
         let connection;
         let res;
         try {
             connection = await db.connection();
-            res = await connection.query("SELECT `id`,`type_id`,`name`,`active`,`img`,`address`,`processing` FROM `sites` ");
-            res = await this.reabaseSite(res, connection)
+            res = await this.__filter({
+                select: [`id`, `type_id`, `name`, `active`, `img`, `address`, `processing`, 'type'],
+            }, connection).then(({queryResult}) => queryResult)
         } catch (err) {
             logger.error(err, 'sites.siteList:');
             throw err;
@@ -31,9 +129,12 @@ module.exports = class Sites {
         let res;
         try {
             connection = await db.connection();
-            res = await connection.query("SELECT * FROM `sites` where `id`=?", [id]);
-            res = await this.reabaseSite(res, connection, true, build)
-            res = res[0]
+            let hasarr = ['onSite']
+            if (build) {
+                hasarr.push('build')
+            }
+            [res] = await this.__filter({filter:{id}},connection)
+                .then(({queryResult})=>queryResult)
         } catch (err) {
             logger.error(err, 'sites.getSite:');
             throw err;
@@ -64,9 +165,8 @@ module.exports = class Sites {
         let res;
         try {
             connection = await db.connection();
-            await connection.query("insert into `sites` (`name`) values (?)", [name]);
-            res = await connection.query("SELECT LAST_INSERT_ID() as `id`");
-            res = res[0].id
+            let [id] = await connection.query("insert into `sites` (`name`) values (?) returning id", [name]);
+            res = id.id
         } catch (err) {
             logger.error(err, 'sites.newSite:');
             throw err;
@@ -120,73 +220,6 @@ module.exports = class Sites {
         }
         return res
     };
-
-    async reabaseSite(res, connection, oneSite = false, build = false) {
-        if (res && res.length) {
-            let types = await connection.query("select `id` as `value`,`name` as `label`,`code` from `site_types`")
-            for (let i = 0; i < res.length; i++) {
-                let el = res[i]
-                if ('img' in el) {
-                    el.img = el.img || ''
-                }
-                if ('address' in el) {
-                    el.address = el.address || ''
-                }
-                if ('contacts' in el) {
-                    el.contacts = JSON.parse(el.contacts) || {
-                        "title": "",
-                        "phone": "",
-                        "city": "",
-                        "street": "",
-                        "house": "",
-                        "litera": "",
-                        "index": 0,
-                        "emailMain": "",
-                        "emailFeedback": "",
-                        "doubleMailing": 0,
-                        "coordinate": {"x": "", "y": ""}
-                    }
-                }
-                if (oneSite && 'template_id' in el) {
-                    el.publications = await connection.query("select `publ_id` as `id` from `site_publications` where `site_id`=?", [el.id])
-                    if (build) {
-                        const files = await getFiles(`upload/templates/${el.template_id}/`);
-                        el.download = [
-                            {
-                                name: `site.settings.json`,
-                                path: `upload/sites/templateData_${el.id}.json`
-                            },
-                            {
-                                name: 'template.json',
-                                path: `upload/templates/${el.template_id}/template.json`
-                            },
-                            ...files
-                        ]
-                    }
-                }
-                if ('template_id' in el) {
-                    let templateData = {}
-                    let templateDataPath = `./upload/sites/templateData_${el.id}.json`
-                    if (el.template_id > 0 && fs.existsSync(templateDataPath)) {
-                        templateData = JSON.parse(fs.readFileSync(templateDataPath, 'utf8')) || {}
-                    }
-                    el.template = templateData
-                    delete el.template_id
-                }
-                if ('type_id' in el) {
-                    el.type = {
-                        options: types,
-                        value: el.type_id || -1
-                    }
-                    delete el.type_id
-                }
-                res[i] = el
-            }
-            return res
-        } else {
-            return res
-        }
-    }
 
     async prepareToSave(data, conn) {
         let props = [

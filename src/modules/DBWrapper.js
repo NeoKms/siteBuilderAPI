@@ -72,23 +72,20 @@ module.exports = class DBWrapper {
             }
             for (const [k, v] of Object.entries(map)) {
                 if (select.includes(k)) {
-                    result.push(`${v} as ${k}`)
+                    result.push(`${v} as \`${k}\``)
                 }
             }
-            hasTest.map(v => {
-                this.query.has[v] = select.includes(v)
-                if (select.includes(v)) {
-                    this.query.hasProp[v] = select[v]
-                }
-            })
         }
         if (!result.length) {
             for (const [k, v] of Object.entries(map)) {
-                result.push(`${v} as ${k}`)
+                result.push(`${v} as \`${k}\``)
                 select.push(k)
             }
         }
         this.extSelect = JSON.parse(JSON.stringify(select))
+        select.map(v => {
+            this.query.has[v] = true
+        })
         this.query.select = !result.length ? '*' : result.join(',');
         const whereFilter = this.createFilter(filter, map, select);
         this.query.where = !whereFilter.trim() ? '' : ` WHERE ${whereFilter}`
@@ -139,8 +136,8 @@ module.exports = class DBWrapper {
                 }
             })
             .then(() => this.connection.query(`select ${this.query.select} ${this.query.from} ${this.query.joins.join(' ')} ${this.query.where} ${this.query.orderBy} ${this.query.limitOffset}`, this.query.props))
-            .then(queryResult=>this.query.result = queryResult)
-            .then(()=>this.openJsonProps())
+            .then(queryResult => this.query.result = queryResult)
+            .then(() => this.openJsonProps())
             .then(() => ({queryResult: this.query.result, has: this.query.has, pagination: this.pagination}))
     }
 
@@ -177,9 +174,9 @@ module.exports = class DBWrapper {
                         }
                         if (map.hasOwnProperty(k)) {
                             if (eq[0] === '&' && Array.isArray(v)) {
-                                if (this.map[k].type==='json') {
+                                if (this.map[k].type === 'json') {
                                     let tmp = []
-                                    v.map(val=>{
+                                    v.map(val => {
                                         tmp.push(`JSON_CONTAINS(${map[k]},?)`)
                                         this.query.props.push(val)
                                     })
@@ -189,9 +186,9 @@ module.exports = class DBWrapper {
                                     w.push(`${map[k]} in (?)`)
                                 }
                             } else if (eq[0] === '$' && Array.isArray(v)) {
-                                if (this.map[k].type==='json') {
+                                if (this.map[k].type === 'json') {
                                     let tmp = []
-                                    v.map(val=>{
+                                    v.map(val => {
                                         tmp.push(`JSON_CONTAINS(${map[k]},?)=0`)
                                         this.query.props.push(val)
                                     })
@@ -204,7 +201,7 @@ module.exports = class DBWrapper {
                                 this.query.props.push(`%${v}%`)
                                 w.push(`${map[k]} like ?`)
                             } else if (eq[0] === '!') {
-                                if (this.map[k].type==='json') {
+                                if (this.map[k].type === 'json') {
                                     w.push(`JSON_CONTAINS(${map[k]},?)=0`)
                                     this.query.props.push(v)
                                 } else {
@@ -216,7 +213,7 @@ module.exports = class DBWrapper {
                                     }
                                 }
                             } else if (eq[0] === '<') {
-                                if (this.map[k].type==='json') {
+                                if (this.map[k].type === 'json') {
                                     continue;
                                 } else {
                                     this.query.props.push(v)
@@ -227,7 +224,7 @@ module.exports = class DBWrapper {
                                     }
                                 }
                             } else if (eq[0] === '>') {
-                                if (this.map[k].type==='json') {
+                                if (this.map[k].type === 'json') {
                                     continue;
                                 } else {
                                     this.query.props.push(v)
@@ -238,7 +235,7 @@ module.exports = class DBWrapper {
                                     }
                                 }
                             } else {
-                                if (this.map[k].type==='json') {
+                                if (this.map[k].type === 'json') {
                                     w.push(`JSON_CONTAINS(${map[k]},?)`)
                                     this.query.props.push(v)
                                 } else {
@@ -261,13 +258,13 @@ module.exports = class DBWrapper {
         return whereFilter
     }
 
-    openJsonProps(){
-        let jsons = this.extSelect.reduce((acc,k)=>{
-            if (this.map.hasOwnProperty(k) && this.map[k].type==='json') {
+    openJsonProps() {
+        let jsons = this.extSelect.reduce((acc, k) => {
+            if (this.map.hasOwnProperty(k) && this.map[k].type === 'json') {
                 acc.push(k)
             }
             return acc;
-        },[])
-        this.query.result.forEach(v=>jsons.forEach(k=>typeof v[k]!=='object' && (v[k] = JSON.parse(v[k]))))
+        }, [])
+        this.query.result.forEach(v => jsons.forEach(k => typeof v[k] !== 'object' && (v[k] = JSON.parse(v[k]))))
     }
 }

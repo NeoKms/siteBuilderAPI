@@ -15,7 +15,7 @@ module.exports = class User {
             connection = await con || db.connection();
             res = await new DBWrapper('users', connection, false).selectValue(select, filter, hasarr).orderBy(options).paginate(options).runQuery();
         } catch (err) {
-            logger.error(err, 'liters.__filter:');
+            logger.error(err, 'users.__filter:');
             throw err;
         } finally {
             if (connection && !con) await connection.release();

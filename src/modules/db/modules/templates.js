@@ -29,7 +29,7 @@ module.exports = class Templates {
                 }
             }
         } catch (err) {
-            logger.error(err, 'liters.__filter:');
+            logger.error(err, 'templates.__filter:');
             throw err;
         } finally {
             if (connection && !con) await connection.release();
