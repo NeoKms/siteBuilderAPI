@@ -2,14 +2,14 @@ const express = require('express');
 const config = require('../config')
 const router = express.Router();
 
-module.exports = (app, passport, client) => {
+module.exports = (app) => {
     let dir = `${__dirname}/modules`
     require('fs').readdirSync(dir).map(module => {
         if (module==='index.js') return;
         if (module.indexOf('.js')!==-1) {
-            router.use(`/${module.replace('.js', '')}`, require(`${dir}/${module}`)(app, passport, client));
+            router.use(`/${module.replace('.js', '')}`, require(`${dir}/${module}`)(app));
         } else {
-            router.use(`/${module}`, require(`${dir}/${module}`)(app, passport, client));
+            router.use(`/${module}`, require(`${dir}/${module}`)(app));
         }
     });
 

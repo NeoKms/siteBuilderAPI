@@ -6,7 +6,7 @@ const {isAccessRead, isAccessWrite, isAccess} = require('../../modules/auth').ge
 const rabbitQueues = require('../../modules/rabbitQueues')
 const router = express.Router();
 
-module.exports = (app, passport, client) => {
+module.exports = (app) => {
     /**
      * @api {get} /sites Список сайтов
      * @apiDescription Отдает список сайтов с минимальным кол-вом пропов

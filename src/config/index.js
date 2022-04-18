@@ -1,34 +1,34 @@
 const {env} = process;
-const fs = require('fs');
-
-const PRODUCTION = String(env.PRODUCTION || false).toLowerCase() == "true"
+const {checkStaticDir} = require('../modules/helpers');
+const config = {};
+config.PRODUCTION = String(env.PRODUCTION || false).toLowerCase() == "true"
 
 //only dev//
-if (!PRODUCTION) {
+if (!config.PRODUCTION) {
     const dotenv = require('dotenv');
     dotenv.config();
 }
 //
 
-const PORT = env.PORT
+config.PORT = parseInt(env.PORT) || 3000
 
-const COOKIE_DOMAIN = env.COOKIE_DOMAIN;
+config.COOKIE_DOMAIN = env.COOKIE_DOMAIN;
 
-const REDIS = {
+config.REDIS = {
     HOST: env.REDIS_HOST,
     PORT: env.REDIS_PORT,
     SECRET: 'W*W(7fhsjDK&A*Eh',
     KEY: 'connect.sid',
 };
 
-const RABBIT = {
+config.RABBIT = {
     URL: `amqp://${env.RABBIT_USER}@${env.RABBIT_HOST}`,
     QUERIES: {},
 };
 
-const WEBSOCKET_HOST = env.WEBSOCKET_HOST
+config.WEBSOCKET_HOST = env.WEBSOCKET_HOST
 
-const DB = {
+config.DB = {
     DB_HOST: env.DB_HOST,
     DB_PORT: env.DB_PORT,
     DB_USER: env.DB_USER,
@@ -36,42 +36,23 @@ const DB = {
     DB_NAME: env.DB_NAME
 };
 
-const SENTRY = String(env.SENTRY_KEY || false).toLowerCase() == "true";
+config.SENTRY = String(env.SENTRY_KEY || false).toLowerCase() == "true";
 
-const RBAC = require('../modules/rbac')
+config.RBAC = require('../modules/rbac')
 
-const SALT = RBAC.authSalt;
+config.SALT = config.RBAC.authSalt;
 
-const AUTH = {
+config.AUTH = {
     LOGIN: env.AUTH_LOGIN,
     PASSWORD: env.AUTH_PASSWORD,
 };
 
-const UPLOAD = env.UPLOAD
+config.UPLOAD = env.UPLOAD
 
-module.exports = {
-    PORT,
-    REDIS,
-    RABBIT,
-    SALT,
-    SENTRY,
-    COOKIE_DOMAIN,
-    DB,
-    RBAC,
-    PRODUCTION,
-    AUTH,
-    WEBSOCKET_HOST,
-    UPLOAD,
-    U_DIRS: {
-        'sites'     : checkStaticDir(UPLOAD + 'sites'),
-        'templates' : checkStaticDir(UPLOAD + 'templates'),
-        'images'    : checkStaticDir(UPLOAD + 'images'),
-    }
+config.U_DIRS = {
+    'sites': checkStaticDir(config.UPLOAD + 'sites'),
+    'templates': checkStaticDir(config.UPLOAD + 'templates'),
+    'images': checkStaticDir(config.UPLOAD + 'images'),
 };
 
-function checkStaticDir(dir) {
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, 0744);
-    }
-    return dir
-}
+module.exports = config;
