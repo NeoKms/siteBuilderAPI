@@ -19,14 +19,15 @@ RUN apt-get install git
 RUN cd /var \
     && git clone https://github.com/NeoKms/siteBuilderAPI.git \
     && cd /var/siteBuilderAPI \
-	&& rm package-lock.json \
-	&& npm install
+    && npm install
 
 WORKDIR /var/siteBuilderAPI
 
-#nodemon
+#pm2
 RUN npm install pm2@latest -g
+#db-migrate
 RUN npm install -g db-migrate
+
 EXPOSE ${PORT} 23
 
 CMD ["/usr/bin/supervisord"]
