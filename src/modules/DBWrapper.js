@@ -1,6 +1,7 @@
 const maps = require('../modules/db/maps');
+const cache = require('./cache');
 
-module.exports = class DBWrapper {
+module.exports = class dbwrapper {
     debug = false;
     connection = null;
     table = null;
@@ -13,12 +14,14 @@ module.exports = class DBWrapper {
         has: {},
         orderBy: '',
         limitOffset: '',
+        groupBy: '',
         hasProp: {},
         props: [],
         joins: [],
         result: false,
     };
     pagination = {
+        onlyLimit: false,
         all: 0,
         page: 1,
         itemsPerPage: 10,
@@ -82,10 +85,10 @@ module.exports = class DBWrapper {
                 select.push(k)
             }
         }
-        this.extSelect = JSON.parse(JSON.stringify(select))
         select.map(v => {
             this.query.has[v] = true
         })
+        this.extSelect = JSON.parse(JSON.stringify(select))
         this.query.select = !result.length ? '*' : result.join(',');
         const whereFilter = this.createFilter(filter, map, select);
         this.query.where = !whereFilter.trim() ? '' : ` WHERE ${whereFilter}`
@@ -96,12 +99,28 @@ module.exports = class DBWrapper {
         return this
     }
 
+    groupBy(options) {
+        if (options?.groupBy && Array.isArray(options.groupBy) && options.groupBy.length && this.map.hasOwnProperty(options.groupBy[0])) {
+            this.query.orderBy = ` GROUP BY ${this.map[options.groupBy[0]].item} `
+            if (this.map[options.groupBy[0]].table && this.tables[this.map[options.groupBy[0]].table].link && !this.query.joins.includes(this.tables[this.map[options.groupBy[0]].table].link)) {
+                this.query.joins.push(this.tables[this.map[options.groupBy[0]].table].item)
+            }
+        }
+        return this
+    }
+
     orderBy(options) {
         if (options?.sortBy && Array.isArray(options.sortBy) && options.sortBy.length && this.map.hasOwnProperty(options.sortBy[0])) {
-            this.query.orderBy = ` ORDER BY ${this.map[options.sortBy[0]].item} ${options?.sortDesc[0] ? ' DESC ' : ' ASC '}`
-            if (this.map[options.sortBy[0]].table && this.tables[this.map[options.sortBy[0]].table].link && !this.query.joins.includes(this.tables[this.map[options.sortBy[0]].table].link)) {
-                this.query.joins.push(this.tables[this.map[options.sortBy[0]].table].item)
-            }
+            let order_array = []
+            options.sortBy.map((field, ind) => {
+                if (this.map.hasOwnProperty(field)) {
+                    order_array.push(` ${this.map[field].item} ${options?.sortDesc[ind] ? ' DESC ' : ' ASC '} `)
+                    if (this.map[field].table && this.tables[this.map[field].table].link && !this.query.joins.includes(this.tables[this.map[field].table].link)) {
+                        this.query.joins.push(this.tables[this.map[options.sortBy[0]].table].item)
+                    }
+                }
+            })
+            this.query.orderBy = ` ORDER BY ${order_array.join(',')}`
         }
         return this
     }
@@ -110,17 +129,39 @@ module.exports = class DBWrapper {
         if (this.debug) {
             console.log('paginate', `select count(*) as cnt ${this.query.from} ${this.query.joins.join(' ')} ${this.query.where}`, this.query.props)
         }
-        this.promises.push(
-            this.connection.query(`select count(*) as cnt ${this.query.from} ${this.query.joins.join(' ')} ${this.query.where}`, this.query.props)
-                .then(([res]) => {
-                    this.pagination.all = res.cnt;
-                    this.pagination.itemsPerPage = options.itemsPerPage || this.pagination.itemsPerPage
-                    this.pagination.maxPages = Math.ceil(this.pagination.all / this.pagination.itemsPerPage)
-                    this.pagination.page = Math.max(1, Math.min(options.page || this.pagination.page, this.pagination.maxPages))
-                    this.pagination.offset = this.pagination.itemsPerPage * (this.pagination.page - 1)
-                    this.query.limitOffset = ` limit ? offset ? `
-                })
-        )
+        if (options.onlyLimit) {
+            this.query.limitOffset = ` limit ? `
+            this.pagination.onlyLimit = true
+        } else {
+            let cachePaginationName = cache.createHash(JSON.stringify({
+                props: this.query.props,
+                query: `select count(*) as cnt ${this.query.from} ${this.query.joins.join(' ')} ${this.query.where}`
+            }))
+            let cacheData = cache.get(cachePaginationName)
+            if (cacheData) {
+                this.pagination.all = cacheData.cnt;
+                this.pagination.itemsPerPage = options.itemsPerPage || this.pagination.itemsPerPage
+                this.pagination.maxPages = Math.ceil(this.pagination.all / this.pagination.itemsPerPage)
+                this.pagination.page = Math.max(1, Math.min(options.page || this.pagination.page, this.pagination.maxPages))
+                this.pagination.offset = this.pagination.itemsPerPage * (this.pagination.page - 1)
+                this.query.limitOffset = ` limit ? offset ? `
+            } else {
+                this.promises.push(
+                    this.connection.query(`select count(*) as cnt ${this.query.from} ${this.query.joins.join(' ')} ${this.query.where}`, this.query.props)
+                        .then(([res]) => {
+                            this.pagination.all = res.cnt;
+                            this.pagination.itemsPerPage = options.itemsPerPage || this.pagination.itemsPerPage
+                            this.pagination.maxPages = Math.ceil(this.pagination.all / this.pagination.itemsPerPage)
+                            if (this.pagination.maxPages > 10) {
+                                cache.set(cachePaginationName, res, 60 * 1000)
+                            }
+                            this.pagination.page = Math.max(1, Math.min(options.page || this.pagination.page, this.pagination.maxPages))
+                            this.pagination.offset = this.pagination.itemsPerPage * (this.pagination.page - 1)
+                            this.query.limitOffset = ` limit ? offset ? `
+                        })
+                )
+            }
+        }
         return this
     }
 
@@ -128,7 +169,10 @@ module.exports = class DBWrapper {
         return Promise.all(this.promises)
             .then(() => {
                 if (this.query.limitOffset) {
-                    this.query.props.push(this.pagination.itemsPerPage, this.pagination.offset)
+                    this.query.props.push(this.pagination.itemsPerPage)
+                    if (!this.pagination.onlyLimit) {
+                        this.query.props.push(this.pagination.offset)
+                    }
                 }
                 if (this.debug) {
                     console.log('queryProps2', this.query);
