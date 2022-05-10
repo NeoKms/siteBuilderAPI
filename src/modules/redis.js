@@ -7,9 +7,10 @@ const RedisClient = redis.createClient({
 const { promisify } = require("util");
 const redisGetAsync = promisify(RedisClient.get).bind(RedisClient);
 const redisSetAsync = promisify(RedisClient.set).bind(RedisClient);
+const redisSetExpire = promisify(RedisClient.expire).bind(RedisClient);
 
 RedisClient.on("error", function (err) {
     console.error("Error redis " + err);
 });
 
-module.exports = {redisGetAsync,redisSetAsync};
+module.exports = {redisGetAsync,redisSetAsync,redisSetExpire};
