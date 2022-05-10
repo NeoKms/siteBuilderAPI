@@ -4,6 +4,7 @@ const config = require('./src/config');
 const bodyParser = require('body-parser');
 const app = express();
 const morgan = require('morgan');
+const Sentry = require("@sentry/node");
 
 require("./src/modules/sentry")(app);
 
@@ -25,7 +26,22 @@ if (require('fs').existsSync('./doc/index.html')) {
     app.use('/apidoc', express.static(__dirname + '/doc'));
 }
 
-app.listen(config.PORT, '0.0.0.0', () => {
-    logger.info(`server runing port: ${config.PORT}`);
-    require('./src/modules/websocket').getConnection();
+app.use(Sentry.Handlers.errorHandler());
+app.use((err, req, res) => {
+  logger.error(err);
+  if (err.name === "HttpError") {
+    res.status(err.statusCode).json({ error: err.message });
+  } else {
+    const msg = config.PRODUCTION ? "Ошибка на стороне сервера" : err.message;
+    res.status(400).json({ error: msg });
+  }
 });
+
+(async () => {
+    // ToDo auto db-migrate
+    // let msg = await exec("db-migrate up");
+    app.listen(config.PORT, '0.0.0.0', () => {
+        logger.info(`server runing port: ${config.PORT}`);
+        require('./src/modules/websocket').getConnection();
+    });
+})();
