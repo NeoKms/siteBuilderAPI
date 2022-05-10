@@ -6,7 +6,7 @@ const {isAccessRead, isAccessWrite, isAccess} = require('../../modules/auth').ge
 
 const router = express.Router();
 
-module.exports = (app, passport, client) => {
+module.exports = (app) => {
     router.get('/', isAccessRead(), async (req, res, next) => {
         try {
             await db.liters.list()

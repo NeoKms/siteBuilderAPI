@@ -33,6 +33,7 @@ deploy to production:
     - kubectl config use-context default
     - sed -i "s/__VERSION__/gitlab-$CI_COMMIT_SHORT_SHA/" k8s.yaml
     - kubectl apply -f k8s.yaml
+    - kubectl rollout status -w deployment/site-builder-api -n default
 
 deploy to develop:
   only:
@@ -50,3 +51,4 @@ deploy to develop:
     - kubectl config use-context default
     - sed -i "s/__VERSION__/gitlab-$CI_COMMIT_SHORT_SHA/" k8s.yaml
     - kubectl apply -f k8s.yaml
+    - kubectl rollout status -w deployment/site-builder-api -n default

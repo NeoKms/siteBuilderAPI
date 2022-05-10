@@ -1,7 +1,7 @@
 const JsonStrategy = require('passport-json').Strategy;
-const { RBAC,SALT } = require('../config');
-const crypto = require('crypto');
-const db = require('./db')
+const { RBAC } = require('../config');
+const {createHashPassword} = require('./helpers');
+const db = require('./db');
 
 module.exports = function (passport) {
     passport.serializeUser((user, done) => {
@@ -20,17 +20,16 @@ module.exports = function (passport) {
             allowEmptyPasswords: false,
         },
         ((req, username, password, done) => {
-            const hash = crypto.createHash('md5').update(SALT + crypto.createHash('md5').update(password).digest('hex') + crypto.createHash('md5').update(SALT).digest('hex')).digest('hex');
             const dataIn = {
                 username,
-                password: hash,
+                password: createHashPassword(password),
             };
             db.users.getAuth(dataIn).then((res) => {
                 if (res) {
                     return done(null, {
                         name: res.name,
                         id: res.id,
-                        rights: { ...RBAC.defaultRights, ...JSON.parse(res.rights) },
+                        rights: { ...RBAC.defaultRights, ...res.rights },
                         phone: res.phone,
                         email: res.email,
                         fio: res.fio,

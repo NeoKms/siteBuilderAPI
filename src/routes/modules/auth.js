@@ -1,8 +1,8 @@
 const express = require('express');
 const {validateOneSchema} = require('../../modules/validate')
 const router = express.Router();
-
-module.exports = (app, passport, client) => {
+const passport = require('passport');
+module.exports = (app) => {
     /**
      * @api {post} /auth/login авторизация по логину\паролю
      * @apiDescription Авторизация по логину\паролю
