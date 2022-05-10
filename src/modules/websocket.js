@@ -14,17 +14,17 @@ const getConnection = async () => {
     socket = io(config.WEBSOCKET_HOST, {transports: ['websocket'], extraHeaders: {cookie: sessionCookie}});
 
     socket.on('connect', (data) => {
-        logger.info('connect to ' + config.WEBSOCKET_HOST + ' success');
+        logger.trace('connect to ' + config.WEBSOCKET_HOST + ' success');
     });
     socket.on("connect_error", async (err) => {
-        logger.info(`socket error: ${err.message}`);
+        logger.debug(`socket error: ${err.message}`);
         socket && socket.close();
         socket = null
         await sleep(1000)
         getConnection()
     });
     socket.on('disconnect', () => {
-        logger.info('socket disconnect');
+        logger.debug('socket disconnect');
         socket && socket.close();
         socket = null
         getConnection()
