@@ -42,9 +42,10 @@ const gen = (entity) => ({
     },
 });
 
+let actualCookie = null;
 const getSessionCookie = (renew = false) => {
-    if (global.coockieAuth !== undefined && renew === false) {
-        return global.coockieAuth;
+    if (actualCookie && renew === false) {
+        return actualCookie;
     }
     return axios({
         method: 'post',
@@ -62,9 +63,9 @@ const getSessionCookie = (renew = false) => {
         }
         const cookies = cookie.parse(loginCookie.headers['set-cookie'][0]);
 
-        global.coockieAuth = `${REDIS.KEY}=${cookies[REDIS.KEY]}`;
+        actualCookie = `${REDIS.KEY}=${cookies[REDIS.KEY]}`;
 
-        return global.coockieAuth;
+        return actualCookie;
     })
         .catch(error => {
             logger.error(error)
