@@ -1,5 +1,5 @@
 # siteBuilderAPI
-api for sitePuiderFront
+api for siteBuiderFront
 
 ## dev: npm run dev
 ## prod: npm run start
