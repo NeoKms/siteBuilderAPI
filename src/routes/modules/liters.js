@@ -12,9 +12,7 @@ module.exports = (app) => {
             await db.liters.list()
                 .then(result => res.json({message: 'ok', result}))
         } catch (error) {
-            logger.error(error)
-            let msg = config.PRODUCTION ? 'error' : error.message
-            res.status(400).json({message: 'error', error: msg});
+            next(error)
         }
     });
     router.post('/byIds', isAccessRead('ids'), async (req, res, next) => {
@@ -23,9 +21,7 @@ module.exports = (app) => {
             await db.liters.byIds(items.ids)
                 .then(result => res.json({message: 'ok', result}))
         } catch (error) {
-            logger.error(error)
-            let msg = config.PRODUCTION ? 'error' : error.message
-            res.status(400).json({message: 'error', error: msg});
+            next(error)
         }
     });
     return router;
