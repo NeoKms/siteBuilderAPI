@@ -1,6 +1,6 @@
 process.env.IS_TEST = true
+const request = require('supertest');
 const app = require('./app')
-const axios = require('axios')
 const config = require('./src/config')
 const cookie = require('cookie')
 const chai = require("chai")
@@ -8,22 +8,22 @@ const chaiAsPromised = require("chai-as-promised")
 chai.use(chaiAsPromised)
 const expect = chai.expect
 const assert = chai.assert
-let authCookie = {
-    timeout: 500,
-    headers: {
-        cookie: 'authCookie',
-    }
+let authCookieHeader = {
+    cookie: 'authCookie',
 }
-const localApiUrl = `http://localhost:${config.PORT}`
 
 describe("Тест авторизации", () => {
     it("Прохождение авторизации", () => {
-        return axios.post(`${localApiUrl}/auth/login`, {
+        return request(app)
+            .post(`/auth/login`)
+            .send({
             "username": config.AUTH.LOGIN,
             "password": config.AUTH.PASSWORD,
-        }, authCookie)
+            })
+            .expect(200)
+            .expect('Content-Type', /json/)
             .then(response => {
-                const authData = response.data
+                const authData = response.body
 
                 expect(authData, 'Ответ апи должен быть успешным').to.have.property('message').equal('ok')
                 expect(response.headers, 'Куки должен существовать').to.have.property('set-cookie').that.lengthOf(1)
@@ -32,35 +32,49 @@ describe("Тест авторизации", () => {
 
                 expect(cookies, 'Куки должен иметь ключ редиса').to.have.property(config.REDIS.KEY)
 
-                authCookie.headers.cookie = `${config.REDIS.KEY}=${cookies[config.REDIS.KEY]}`
+                authCookieHeader.cookie = `${config.REDIS.KEY}=${cookies[config.REDIS.KEY]}`
             })
     })
 
     it("Прохождение аутентификации", () => {
-        return axios.get(`${localApiUrl}/auth/checkLogin`, authCookie)
+        return request(app)
+            .get(`/auth/checkLogin`)
+            .set(authCookieHeader)
+            .expect(200).expect('Content-Type', /json/)
+            .then(({body}) => {
+                expect(body, 'Ответ апи должен быть успешным').to.have.property('message').equal('ok')
+            })
     })
 
     it("Логаут", () => {
-        return axios.get(`${localApiUrl}/auth/logout`, authCookie)
-            .then(noRes => {
-                return axios.get(`${localApiUrl}/auth/checkLogin`, authCookie)
-                    .then(res => {
-                        expect(res.status, 'Проверка аутентификации должна отдать код 403').to.equal(403)
-                    })
-                    .catch(err => err)
-            })
+        return request(app)
+            .get(`/auth/logout`)
+            .set(authCookieHeader)
+            .expect(200).expect('Content-Type', /json/)
+    })
+
+    it("Логаут был успешен", () => {
+        return request(app)
+            .get(`/auth/checkLogin`)
+            .set(authCookieHeader)
+            .expect(403).expect('Content-Type', /json/)
     })
 })
 
 describe("Тест шаблонов", () => {
 
     it("Прохождение авторизации", () => {
-        return axios.post(`${localApiUrl}/auth/login`, {
+        return request(app)
+            .post(`/auth/login`)
+            .send({
             "username": config.AUTH.LOGIN,
             "password": config.AUTH.PASSWORD,
-        }, authCookie)
+            })
+            .set(authCookieHeader)
+            .expect(200)
+            .expect('Content-Type', /json/)
             .then(response => {
-                const authData = response.data
+                const authData = response.body
 
                 expect(authData, 'Ответ апи должен быть успешным').to.have.property('message').equal('ok')
                 expect(response.headers, 'Куки должен существовать').to.have.property('set-cookie').that.lengthOf(1)
@@ -69,7 +83,7 @@ describe("Тест шаблонов", () => {
 
                 expect(cookies, 'Куки должен иметь ключ редиса').to.have.property(config.REDIS.KEY)
 
-                authCookie.headers.cookie = `${config.REDIS.KEY}=${cookies[config.REDIS.KEY]}`
+                authCookieHeader.cookie = `${config.REDIS.KEY}=${cookies[config.REDIS.KEY]}`
             })
     })
 
@@ -77,9 +91,13 @@ describe("Тест шаблонов", () => {
         let imgArr = []
 
         it("Получение списка картинок", () => {
-            return axios.get(`${localApiUrl}/templates/images`, authCookie)
+            return request(app)
+                .get(`/templates/images`)
+                .set(authCookieHeader)
+                .expect(200)
+                .expect('Content-Type', /json/)
                 .then(response => {
-                    const respdata = response.data
+                    const respdata = response.body
 
                     expect(respdata, 'Ответ апи должен быть успешным').to.have.property('message').equal('ok')
                     expect(respdata.result, 'Картинки должны быть массивом').to.be.an('array')
@@ -89,16 +107,24 @@ describe("Тест шаблонов", () => {
         })
 
         it('Первая картинка доступна', () => {
-            return axios.get(`${localApiUrl}/${imgArr[0]}`, authCookie)
+            return request(app)
+                .get(`/${imgArr[0]}`)
+                .set(authCookieHeader)
+                .expect(200)
+                .expect('Content-Type', /image/)
         })
     })
 
     describe("Тест работы с шаблонами", () => {
 
         it("Получение списка шаблонов", () => {
-            return axios.get(`${localApiUrl}/templates/`, authCookie)
+            return request(app)
+                .get(`/templates/`)
+                .set(authCookieHeader)
+                .expect(200)
+                .expect('Content-Type', /json/)
                 .then(response => {
-                    const respdata = response.data
+                    const respdata = response.body
 
                     expect(respdata, 'Ответ апи должен быть успешным').to.have.property('message').equal('ok')
 
@@ -108,7 +134,6 @@ describe("Тест шаблонов", () => {
                         expect(respdata.result, 'Список шаблонов должен быть массивом').to.be.an('array')
                     }
 
-                    imgArr = respdata.result
                 })
         })
 

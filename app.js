@@ -16,8 +16,10 @@ app
     .use(bodyParser.urlencoded())
     .use(bodyParser.json())
     .use(cookieParser())
-    .use(morgan(':remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" - :response-time ms'));
 
+if (!process.env.IS_TEST) {
+    app.use(morgan(':remote-addr - :remote-user [:date[iso]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" - :response-time ms'));
+}
 
 require('./src/routes')(app);
 
@@ -45,3 +47,4 @@ app.use((err, req, res, next) => {
         require('./src/modules/websocket').getConnection();
     });
 })();
+module.exports = app;
