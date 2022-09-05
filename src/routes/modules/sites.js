@@ -1,7 +1,5 @@
 const express = require('express');
-const logger = require('../../modules/logger');
 const db = require('../../modules/db');
-const config = require('../../config')
 const {isAccessRead, isAccessWrite, isAccess} = require('../../modules/auth').gen('sites');
 const rabbitQueues = require('../../modules/rabbitQueues')
 const router = express.Router();
@@ -91,9 +89,7 @@ module.exports = (app) => {
             await db.sites.siteList()
                 .then(result => res.json({message: 'ok', result}))
         } catch (error) {
-            logger.error(error)
-            let msg = config.PRODUCTION ? 'error' : error.message
-            res.status(400).json({message: 'error', error: msg});
+            next(error)
         }
     });
     /**
@@ -158,9 +154,7 @@ module.exports = (app) => {
                     res.json({message: 'ok', result})
                 })
         } catch (error) {
-            logger.error(error)
-            let msg = config.PRODUCTION ? 'error' : error.message
-            res.status(400).json({message: 'error', error: msg});
+            next(error)
         }
     });
     /**
@@ -227,9 +221,7 @@ module.exports = (app) => {
                     res.json({message: 'ok', result})
                 })
         } catch (error) {
-            logger.error(error)
-            let msg = config.PRODUCTION ? 'error' : error.message
-            res.status(400).json({message: 'error', error: msg});
+            next(error)
         }
     });
     /**
@@ -305,9 +297,7 @@ module.exports = (app) => {
                 })
 
         } catch (error) {
-            logger.error(error)
-            let msg = config.PRODUCTION ? 'error' : error.message
-            res.status(400).json({message: 'error', error: msg});
+            next(error)
         }
     });
     /**
@@ -336,9 +326,7 @@ module.exports = (app) => {
             await db.sites.delSite(id)
                 .then( noRes => res.json({message: 'ok'}))
         } catch (error) {
-            logger.error(error)
-            let msg = config.PRODUCTION ? 'error' : error.message
-            res.status(400).json({message: 'error', error: msg});
+            next(error)
         }
     });
     /**
@@ -398,9 +386,7 @@ module.exports = (app) => {
                 .then( id => db.sites.getSite(id))
                 .then( result => res.json({message: 'ok', result}))
         } catch (error) {
-            logger.error(error)
-            let msg = config.PRODUCTION ? 'error' : error.message
-            res.status(400).json({message: 'error', error: msg});
+            next(error)
         }
     });
     /**
@@ -451,9 +437,7 @@ module.exports = (app) => {
                     }
                 })
         } catch (error) {
-            logger.error(error)
-            let msg = config.PRODUCTION ? 'error' : error.message
-            res.status(400).json({message: 'error', error: msg});
+            next(error)
         }
     });
     /**
@@ -498,9 +482,7 @@ module.exports = (app) => {
                             })
                 })
         } catch (error) {
-            logger.error(error)
-            let msg = config.PRODUCTION ? 'error' : error.message
-            res.status(400).json({message: 'error', error: msg});
+            next(error)
         }
     });
     return router;

@@ -27,7 +27,7 @@ if (require('fs').existsSync('./doc/index.html')) {
 }
 
 app.use(Sentry.Handlers.errorHandler());
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   logger.error(err);
   if (err.name === "HttpError") {
     res.status(err.statusCode).json({ error: err.message });
