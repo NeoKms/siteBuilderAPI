@@ -1,5 +1,7 @@
 const {env} = process;
 const {checkStaticDir} = require('../modules/helpers');
+const PathModule = require("path");
+const path = require("path");
 const config = {};
 config.PRODUCTION = String(env.PRODUCTION || false).toLowerCase() == "true"
 
@@ -47,7 +49,9 @@ config.AUTH = {
     PASSWORD: env.AUTH_PASSWORD,
 };
 
-config.UPLOAD = env.UPLOAD
+config.UPLOAD = checkStaticDir(
+    env.UPLOAD || path.resolve(__dirname + "/../../upload") + "/"
+);
 
 config.U_DIRS = {
     'sites': checkStaticDir(config.UPLOAD + 'sites'),
