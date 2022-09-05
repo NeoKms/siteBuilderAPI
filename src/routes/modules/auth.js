@@ -67,8 +67,12 @@ module.exports = (app) => {
      }
      */
     router.get('/logout', (req, res) => {
-        req.logout();
-        res.json({message: 'ok', result: 'success'});
+        req.logout(function (err) {
+            if (err) {
+                return next(err);
+            }
+            res.json({ message: "ok", result: "success" });
+        });
     });
     /**
      * @api {get} /auth/checkLogin Проверка на авторизацию
