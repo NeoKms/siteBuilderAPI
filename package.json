@@ -7,7 +7,8 @@
     "dev": "nodemon app.js --ignore 'upload/*",
     "start": "node app.js",
     "apidoc": "apidoc -i src/ -o doc/",
-    "test": "mocha index.test.js --exit"
+    "test": "mocha index.test.js --exit",
+    "eslint-fix": "eslint --fix ."
   },
   "nodemonConfig": {
     "ignore": [
