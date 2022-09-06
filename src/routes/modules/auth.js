@@ -1,9 +1,9 @@
-const express = require('express');
-const {validateOneSchema} = require('../../modules/validate')
+const express = require("express");
+const {validateOneSchema} = require("../../modules/validate");
 const router = express.Router();
-const passport = require('passport');
-module.exports = (app) => {
-    /**
+const passport = require("passport");
+module.exports = () => {
+  /**
      * @api {post} /auth/login авторизация по логину\паролю
      * @apiDescription Авторизация по логину\паролю
      * @apiName login
@@ -33,20 +33,20 @@ module.exports = (app) => {
          "error": text or array
      }
      */
-    router.post('/login', validateOneSchema('user-login'), (req, res, next) => {
-        passport.authenticate('json', (err, user, info) => {
-            if (err === null && user !== false) {
-                req.login(user, (error) => {
-                    if (error) return next(error);
-                    res.json({message: 'ok', result: user});
-                });
-            } else {
-                res.status(401).json({message: 'error', error: err.error || 'not authenticated'});
-            }
-        })(req, res);
-    });
+  router.post("/login", validateOneSchema("user-login"), (req, res, next) => {
+    passport.authenticate("json", (err, user) => {
+      if (err === null && user !== false) {
+        req.login(user, (error) => {
+          if (error) return next(error);
+          res.json({message: "ok", result: user});
+        });
+      } else {
+        res.status(401).json({message: "error", error: err.error || "not authenticated"});
+      }
+    })(req, res);
+  });
 
-    /**
+  /**
      * @api {get} /auth/logout Выход из аккаунта
      * @apiDescription Выход из аккаунта
      * @apiName logout
@@ -66,11 +66,15 @@ module.exports = (app) => {
          "error": text or array
      }
      */
-    router.get('/logout', (req, res) => {
-        req.logout();
-        res.json({message: 'ok', result: 'success'});
+  router.get("/logout", (req, res, next) => {
+    req.logout(function (err) {
+      if (err) {
+        return next(err);
+      }
+      res.json({ message: "ok", result: "success" });
     });
-    /**
+  });
+  /**
      * @api {get} /auth/checkLogin Проверка на авторизацию
      * @apiDescription Проверяет по куки авторизован ли пользователь. При успехе отдает массив данных по юзеру.
      * @apiName checkLogin
@@ -99,13 +103,13 @@ module.exports = (app) => {
     "error": "not authenticated"
 }
      */
-    router.get('/checkLogin', (req, res, next) => {
-        if (req.isAuthenticated()) {
-            res.send({message: 'ok', result: req.user});
-        } else {
-            res.status(403).json({message: 'error', error: "not authenticated"});
-        }
-    });
+  router.get("/checkLogin", (req, res) => {
+    if (req.isAuthenticated()) {
+      res.send({message: "ok", result: req.user});
+    } else {
+      res.status(403).json({message: "error", error: "not authenticated"});
+    }
+  });
 
-    return router;
+  return router;
 };

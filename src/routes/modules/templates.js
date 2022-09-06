@@ -1,13 +1,13 @@
-const express = require('express');
-const db = require('../../modules/db');
-const config = require('../../config');
-const fs = require('fs');
-const {isAccessRead} = require('../../modules/auth').gen('sites');
+const express = require("express");
+const db = require("../../modules/db");
+const config = require("../../config");
+const fs = require("fs");
+const {isAccessRead} = require("../../modules/auth").gen("sites");
 
 const router = express.Router();
 
-module.exports = (app) => {
-    /**
+module.exports = () => {
+  /**
      * @api {get} /templates Список шаблонов
      * @apiDescription Отдает список шаблонов со всеми данными
      * @apiName templates
@@ -40,22 +40,22 @@ module.exports = (app) => {
          "error":error text or array
      }
      */
-    router.get('/', isAccessRead(), async (req, res, next) => {
-        try {
-            await db.templates.list()
-                .then(result => res.json({message: 'ok', result}))
-        } catch (error) {
-            next(error)
-        }
-    });
+  router.get("/", isAccessRead(), async (req, res, next) => {
+    try {
+      await db.templates.list()
+        .then(result => res.json({message: "ok", result}));
+    } catch (error) {
+      next(error);
+    }
+  });
 
-    router.get('/images', isAccessRead(), async (req, res, next) => {
-        try {
-            let items = fs.readdirSync(config.U_DIRS.images).map(el=>`upload/images/${el}`);
-            res.json({message: 'ok', result:items})
-        } catch (error) {
-            next(error)
-        }
-    });
-    return router;
+  router.get("/images", isAccessRead(), async (req, res, next) => {
+    try {
+      let items = fs.readdirSync(config.U_DIRS.images).map(el=>`upload/images/${el}`);
+      res.json({message: "ok", result:items});
+    } catch (error) {
+      next(error);
+    }
+  });
+  return router;
 };

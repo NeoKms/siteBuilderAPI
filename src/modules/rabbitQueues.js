@@ -1,9 +1,9 @@
-const rabbitmq = require('./rabbit')
+const rabbitmq = require("./rabbit");
 
-const toDataProcessor = rabbitmq.createWriter('dataProcessor');
+const toDataProcessor = rabbitmq.createWriter("dataProcessor");
 
 module.exports = {
-    toDataProcessor
+  toDataProcessor
 };
 
 
