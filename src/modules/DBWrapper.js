@@ -11,6 +11,7 @@ module.exports = class dbwrapper {
     select: "",
     from: "",
     where: "",
+    whereFields: [],
     has: {},
     orderBy: "",
     limitOffset: "",
@@ -143,12 +144,11 @@ module.exports = class dbwrapper {
   }
 
   paginate(options) {
+    const queryString = `select count(*) as cnt ${this.query.from} ${this.getJoinsForPagination().join(" ")} ${this.query.where} ${this.query.groupBy}`
     if (this.debug) {
       console.log(
         "paginate",
-        `select count(*) as cnt ${this.query.from} ${this.query.joins.join(
-          " "
-        )} ${this.query.where}`,
+        queryString,
         this.query.props
       );
     }
@@ -161,9 +161,7 @@ module.exports = class dbwrapper {
       let cachePaginationName = cache.createHash(
         JSON.stringify({
           props: this.query.props,
-          query: `select count(*) as cnt ${
-            this.query.from
-          } ${this.query.joins.join(" ")} ${this.query.where}`,
+          query: queryString,
         })
       );
       let cacheData = cache.get(cachePaginationName);
@@ -186,9 +184,7 @@ module.exports = class dbwrapper {
         this.promises.push(
           this.connection
             .query(
-              `select count(*) as cnt ${
-                this.query.from
-              } ${this.query.joins.join(" ")} ${this.query.where}`,
+              queryString,
               this.query.props
             )
             .then(([res]) => {
@@ -281,7 +277,23 @@ module.exports = class dbwrapper {
       }, new Set())
     );
   }
-
+  
+  getJoinsForPagination() {
+    return Array.from(
+      this.query.whereFields.reduce((a, v) => {
+        if (Object.prototype.hasOwnProperty.call(this.map, v)) {
+          let t = this.map[v].table;
+          if (!t) return a;
+          if (this.tables[t].link) {
+            a.add(this.tables[this.tables[t].link].item);
+          }
+          a.add(this.tables[t].item);
+        }
+        return a;
+      }, new Set())
+    );
+  }
+  
   createFilter(filter = {}, map = {}, selectArr) {
     let logic = "AND";
     let w = [];
@@ -300,6 +312,9 @@ module.exports = class dbwrapper {
               selectArr.push(k);
             }
             if (Object.prototype.hasOwnProperty.call(map, k)) {
+              if (!this.query.whereFields.includes(k)) {
+                this.query.whereFields.push(k)
+              }
               if (eq[0] === "&" && Array.isArray(v)) {
                 if (this.map[k].type === "json") {
                   let tmp = [];
